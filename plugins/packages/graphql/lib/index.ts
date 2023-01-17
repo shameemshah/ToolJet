@@ -25,7 +25,7 @@ export default class GraphqlQueryService implements QueryService {
 
     const json = {
       query,
-      variables: variables ? JSON.parse(variables) : {} || {},
+      variables: variables ? JSON.parse(variables) : {},
     };
 
     try {
