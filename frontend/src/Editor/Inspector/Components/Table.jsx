@@ -2,6 +2,7 @@ import React from 'react';
 import Accordion from '@/_ui/Accordion';
 
 import { renderElement } from '../Utils';
+import { renderColumnEditable } from '../ColumnEditable';
 import { computeActionName, resolveReferences } from '@/_helpers/utils';
 // eslint-disable-next-line import/no-unresolved
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
@@ -14,7 +15,7 @@ import { EventManager } from '../EventManager';
 import { CodeHinter } from '../../CodeBuilder/CodeHinter';
 import { withTranslation } from 'react-i18next';
 class TableComponent extends React.Component {
-  constructor(props) {
+  constructor (props) {
     super(props);
 
     const {
@@ -43,7 +44,7 @@ class TableComponent extends React.Component {
     };
   }
 
-  componentDidMount() {
+  componentDidMount () {
     const {
       dataQueries,
       component,
@@ -121,7 +122,7 @@ class TableComponent extends React.Component {
     this.props.paramUpdated({ name: 'columns' }, 'value', newColumns, 'properties');
   };
 
-  setColumnPopoverRootCloseBlocker(key, isBlocking) {
+  setColumnPopoverRootCloseBlocker (key, isBlocking) {
     if (isBlocking) {
       this.setState((prev) => ({ popOverRootCloseBlockers: [...prev.popOverRootCloseBlockers, key] }));
     } else {
@@ -165,6 +166,7 @@ class TableComponent extends React.Component {
       { name: '+12:00', value: 'Etc/GMT-12' },
       { name: '+13:00', value: 'Pacific/Auckland' },
     ];
+    const { dataQueries, component, paramUpdated, componentMeta, components, currentState, darkMode } = this.props;
     return (
       <Popover id="popover-basic-2" className={`${this.props.darkMode && 'popover-dark-themed theme-dark'} shadow`}>
         <Popover.Content>
@@ -364,6 +366,16 @@ class TableComponent extends React.Component {
                   </div>
                 </div>
               )}
+              <>
+                {renderColumnEditable(
+                  component,
+                  componentMeta,
+                  this.props.layoutPropertyChanged,
+                  dataQueries,
+                  currentState
+                )}
+              </>
+
             </div>
           )}
 
@@ -443,41 +455,41 @@ class TableComponent extends React.Component {
             column.columnType === 'badge' ||
             column.columnType === 'badges' ||
             column.columnType === 'radio') && (
-            <div>
-              <div data-cy={`input-and-label-values`} className="field mb-2">
-                <label className="form-label">{this.props.t('widget.Table.values', 'Values')}</label>
-                <CodeHinter
-                  currentState={this.props.currentState}
-                  initialValue={column.values}
-                  theme={this.props.darkMode ? 'monokai' : 'default'}
-                  mode="javascript"
-                  lineNumbers={false}
-                  placeholder={'{{[1, 2, 3]}}'}
-                  onChange={(value) => this.onColumnItemChange(index, 'values', value)}
-                  componentName={this.getPopoverFieldSource(column.columnType, 'values')}
-                  popOverCallback={(showing) => {
-                    this.setColumnPopoverRootCloseBlocker('values', showing);
-                  }}
-                />
+              <div>
+                <div data-cy={`input-and-label-values`} className="field mb-2">
+                  <label className="form-label">{this.props.t('widget.Table.values', 'Values')}</label>
+                  <CodeHinter
+                    currentState={this.props.currentState}
+                    initialValue={column.values}
+                    theme={this.props.darkMode ? 'monokai' : 'default'}
+                    mode="javascript"
+                    lineNumbers={false}
+                    placeholder={'{{[1, 2, 3]}}'}
+                    onChange={(value) => this.onColumnItemChange(index, 'values', value)}
+                    componentName={this.getPopoverFieldSource(column.columnType, 'values')}
+                    popOverCallback={(showing) => {
+                      this.setColumnPopoverRootCloseBlocker('values', showing);
+                    }}
+                  />
+                </div>
+                <div data-cy={`input-and-label-labels`} className="field mb-2">
+                  <label className="form-label">{this.props.t('widget.Table.labels', 'Labels')}</label>
+                  <CodeHinter
+                    currentState={this.props.currentState}
+                    initialValue={column.labels}
+                    theme={this.props.darkMode ? 'monokai' : 'default'}
+                    mode="javascript"
+                    lineNumbers={false}
+                    placeholder={'{{["one", "two", "three"]}}'}
+                    onChange={(value) => this.onColumnItemChange(index, 'labels', value)}
+                    componentName={this.getPopoverFieldSource(column.columnType, 'labels')}
+                    popOverCallback={(showing) => {
+                      this.setColumnPopoverRootCloseBlocker('labels', showing);
+                    }}
+                  />
+                </div>
               </div>
-              <div data-cy={`input-and-label-labels`} className="field mb-2">
-                <label className="form-label">{this.props.t('widget.Table.labels', 'Labels')}</label>
-                <CodeHinter
-                  currentState={this.props.currentState}
-                  initialValue={column.labels}
-                  theme={this.props.darkMode ? 'monokai' : 'default'}
-                  mode="javascript"
-                  lineNumbers={false}
-                  placeholder={'{{["one", "two", "three"]}}'}
-                  onChange={(value) => this.onColumnItemChange(index, 'labels', value)}
-                  componentName={this.getPopoverFieldSource(column.columnType, 'labels')}
-                  popOverCallback={(showing) => {
-                    this.setColumnPopoverRootCloseBlocker('labels', showing);
-                  }}
-                />
-              </div>
-            </div>
-          )}
+            )}
 
           {column.columnType === 'dropdown' && (
             <>
@@ -673,7 +685,7 @@ class TableComponent extends React.Component {
             </div>
           )}
         </Popover.Content>
-      </Popover>
+      </Popover >
     );
   };
 
@@ -763,7 +775,7 @@ class TableComponent extends React.Component {
     );
   };
 
-  actionButton(action, index) {
+  actionButton (action, index) {
     return (
       <OverlayTrigger
         trigger="click"
@@ -863,7 +875,7 @@ class TableComponent extends React.Component {
     this.props.paramUpdated({ name: 'columns' }, 'value', result, 'properties');
   };
 
-  onDragEnd({ source, destination }) {
+  onDragEnd ({ source, destination }) {
     if (!destination || source?.index === destination?.index) {
       return;
     }
@@ -873,7 +885,7 @@ class TableComponent extends React.Component {
   getPopoverFieldSource = (column, field) =>
     `widget/${this.props.component.component.name}/${column ?? 'default'}::${field}`;
 
-  render() {
+  render () {
     const { dataQueries, component, paramUpdated, componentMeta, components, currentState, darkMode } = this.props;
 
     const columns = component.component.definition.properties.columns;
