@@ -2,7 +2,27 @@ import _ from 'lodash';
 import { dataqueryService } from '@/_services/dataquery.service';
 
 export async function getRecommendation(queryId, currentContext, query, lang = 'javascript') {
-  const context = JSON.stringify(currentContext);
+  const words = query.split(' ');
+  let results = [];
+
+  function arrayToObject(arr) {
+    return _.reduce(
+      arr,
+      (result, { key, value }) => {
+        if (!result.hasOwnProperty(key)) {
+          result[key] = value;
+        }
+        return result;
+      },
+      {}
+    );
+  }
+
+  words.forEach((word) => {
+    results = results.concat(searchQuery(word, currentContext));
+  });
+  console.log('--recommendation--', arrayToObject(results));
+  const context = JSON.stringify(arrayToObject(results));
 
   const { data } = await dataqueryService.getCopilotRecommendations(queryId, { query, context, lang });
   return data;
@@ -256,4 +276,22 @@ export function handleChange(editor, onChange, ignoreBraces = false, currentStat
     };
     keystrokeCaller();
   }
+}
+
+function searchQuery(query, obj) {
+  const lcQuery = query.toLowerCase();
+  let results = [];
+
+  for (const key in obj) {
+    const value = obj[key];
+    if (value !== null && typeof value === 'object') {
+      results = results.concat(searchQuery(lcQuery, value));
+    } else {
+      if (key.toLowerCase().includes(lcQuery) || value.toString().toLowerCase().includes(lcQuery)) {
+        results.push({ key, value });
+      }
+    }
+  }
+
+  return results;
 }
