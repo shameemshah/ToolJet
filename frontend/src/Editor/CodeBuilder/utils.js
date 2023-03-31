@@ -1,24 +1,11 @@
 import _ from 'lodash';
-const { Configuration, OpenAIApi } = require('openai');
-import config from 'config';
+import { dataqueryService } from '@/_services/dataquery.service';
 
-export async function getRecommendation(currentContext, query, lang = 'javascript') {
-  const configuration = new Configuration({
-    apiKey: config.OPENAI_API_KEY,
-  });
-  const openai = new OpenAIApi(configuration);
-
+export async function getRecommendation(queryId, currentContext, query, lang = 'javascript') {
   const context = JSON.stringify(currentContext);
-  const queryPrefix = `Only show the code snippet that is needed and avoid explanation. Show ${lang} code only. \n\n`;
 
-  const completion = await openai.createChatCompletion({
-    model: 'gpt-3.5-turbo',
-    messages: [{ role: 'user', content: context + '\n\n' + query + '\n\n' + queryPrefix }],
-  });
-
-  console.log('---CHATGPT gpt---', completion.data.choices[0].message.content);
-
-  return completion.data.choices[0].message.content;
+  const { data } = await dataqueryService.getCopilotRecommendations(queryId, { query, context, lang });
+  return data;
 }
 
 function getResult(suggestionList, query) {

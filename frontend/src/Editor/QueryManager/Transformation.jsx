@@ -40,12 +40,12 @@ return [row for row in data if row['amount'] > 1000]
   const handleCallToGPT = async () => {
     setFetchingRecommendation(true);
     const query = state[lang];
-    const recommendation = await getRecommendation(currentState, query, lang);
+    const recommendation = await getRecommendation(queryId, currentState, query, lang);
     setFetchingRecommendation(false);
     changeOption('transformation', recommendation);
   };
 
-  function toggleEnableTransformation () {
+  function toggleEnableTransformation() {
     setEnableTransformation((prev) => !prev);
     changeOption('enableTransformation', !enableTransformation);
   }
@@ -89,7 +89,7 @@ return [row for row in data if row['amount'] > 1000]
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [queryId]);
 
-  function getNonActiveTransformations (activeLang) {
+  function getNonActiveTransformations(activeLang) {
     switch (activeLang) {
       case 'javascript':
         return {
@@ -148,32 +148,29 @@ return [row for row in data if row['amount'] > 1000]
     </Popover>
   );
 
-
   const popoverForRecommendation = (
     <Popover id="transformation-popover-container">
-      <div className='transformation-popover card text-center'>
+      <div className="transformation-popover card text-center">
         <img src="/assets/images/icons/copilot.svg" alt="AI copilot" height={64} width={64} />
-        <div className='d-flex flex-column card-body'>
-          <h4 className='mb-2'>
-            ToolJet x OpenAI
-          </h4>
-          <p className='mb-2'>
-            <strong style={{ fontWeight: 700, color: '#3E63DD' }}>AI copilot</strong> helps you write your queries faster. It uses OpenAI's GPT-3.5 to suggest queries based on your data.
+        <div className="d-flex flex-column card-body">
+          <h4 className="mb-2">ToolJet x OpenAI</h4>
+          <p className="mb-2">
+            <strong style={{ fontWeight: 700, color: '#3E63DD' }}>AI copilot</strong> helps you write your queries
+            faster. It uses OpenAI&apos;s GPT-3.5 to suggest queries based on your data.
           </p>
 
           <Button
             darkMode={darkMode}
             size="sm"
-            classNames='default-secondary-button'
+            classNames="default-secondary-button"
             styles={{ width: '100%', fontSize: '12px', fontWeight: 700, borderColor: darkMode && 'transparent' }}
           >
             <Button.Content title={'Read more'} />
           </Button>
         </div>
-
-      </div >
-    </Popover >
-  )
+      </div>
+    </Popover>
+  );
 
   const EducativeLebel = () => {
     const title = () => {
@@ -184,8 +181,8 @@ return [row for row in data if row['amount'] > 1000]
       );
     };
     return (
-      <div className='d-flex'>
-        <Button.UnstyledButton styles={{ height: '28px' }} darkMode={darkMode} classNames='mx-1'>
+      <div className="d-flex">
+        <Button.UnstyledButton styles={{ height: '28px' }} darkMode={darkMode} classNames="mx-1">
           <Button.Content title={title} iconSrc={'assets/images/icons/flash.svg'} direction="left" />
         </Button.UnstyledButton>
         <OverlayTrigger trigger="click" placement="left" overlay={popoverForRecommendation} rootClose>

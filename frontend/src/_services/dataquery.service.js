@@ -9,6 +9,7 @@ export const dataqueryService = {
   del,
   preview,
   changeQueryDataSource,
+  getCopilotRecommendations,
 };
 
 function getAll(appVersionId) {
@@ -73,4 +74,14 @@ function changeQueryDataSource(id, dataSourceId) {
   };
   const requestOptions = { method: 'PUT', headers: authHeader(), body: JSON.stringify(body) };
   return fetch(`${config.apiUrl}/data_queries/${id}/data_source`, requestOptions).then(handleResponse);
+}
+
+function getCopilotRecommendations(id, options) {
+  const body = {
+    query: options.query,
+    context: options.context,
+    language: options.lang,
+  };
+  const requestOptions = { method: 'POST', headers: authHeader(), body: JSON.stringify(body) };
+  return fetch(`${config.apiUrl}/data_queries/${id}/copilot`, requestOptions).then(handleResponse);
 }
