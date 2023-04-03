@@ -1,8 +1,8 @@
 import { QueryError, QueryResult, QueryService } from '@tooljet-plugins/common';
 import { SourceOptions, QueryOptions, EmailOptions } from './types';
-const FormData = require('form-data');
+import * as formData from 'form-data';
 import Mailgun from 'mailgun.js';
-const mailgun = new Mailgun(FormData);
+const mailgun = new Mailgun(formData as any);
 
 export default class MailgunLib implements QueryService {
   async run(sourceOptions: SourceOptions, queryOptions: QueryOptions, dataSourceId: string): Promise<QueryResult> {
