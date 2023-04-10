@@ -13,7 +13,7 @@ import { OrgEnvironmentVariable } from 'src/entities/org_envirnoment_variable.en
 import { EncryptionService } from './encryption.service';
 import { App } from 'src/entities/app.entity';
 import { AppEnvironmentService } from './app_environments.service';
-import { dbTransactionWrap, getOpenAIConnection } from 'src/helpers/utils.helper';
+import { dbTransactionWrap } from 'src/helpers/utils.helper';
 import { DataSourceScopes } from 'src/helpers/data_source.constants';
 
 @Injectable()
@@ -478,26 +478,21 @@ export class DataQueriesService {
   }
 
   async getCopilotRecommendations(copilotOptions: ICopilotOptions) {
-    const openai = await getOpenAIConnection();
+    const copilotAPIOpts = {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'x-Api-key': '460dd72cc609ada298384b685eafda98714fa50146d98c9831aea49fb36c2c70',
+      },
+      body: JSON.stringify({ ...copilotOptions }),
+    };
 
-    const { query, language = 'javascript', context } = copilotOptions;
-    const queryPrefix = `Only show the code snippet that is needed and avoid explanation. Show ${language} code only. \n\n`;
-
-    // TODO: Option to add rate limit
-
-    const { data, status } = await openai.createChatCompletion({
-      model: 'gpt-3.5-turbo',
-      messages: [{ role: 'user', content: context + '\n\n' + query + '\n\n' + queryPrefix }],
-    });
-
-    if (status !== 200) {
-      throw new Error('Error in getting copilot recommendations');
-    }
-    // console.log('server side chatgpt ==>', data.choices[0].message.content);
+    const response = await fetch('https://4f0uiuzrr2.execute-api.us-west-1.amazonaws.com/Prod/copilot', copilotAPIOpts);
+    const { data } = await response.json();
 
     return {
-      data: data.choices[0].message.content,
-      status,
+      data: data,
+      status: response.status,
     };
   }
 }
