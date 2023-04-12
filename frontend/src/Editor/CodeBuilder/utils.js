@@ -1,7 +1,7 @@
 import _ from 'lodash';
-import { dataqueryService } from '@/_services/dataquery.service';
+import { copilotService } from '@/_services/copilot.service';
 
-export async function getRecommendation(queryId, currentContext, query, lang = 'javascript') {
+export async function getRecommendation(currentContext, query, lang = 'javascript') {
   const words = query.split(' ');
   let results = [];
 
@@ -21,10 +21,11 @@ export async function getRecommendation(queryId, currentContext, query, lang = '
   words.forEach((word) => {
     results = results.concat(searchQuery(word, currentContext));
   });
-  console.log('--recommendation--', arrayToObject(results));
+
   const context = JSON.stringify(arrayToObject(results));
 
-  const { data } = await dataqueryService.getCopilotRecommendations(queryId, { query, context, lang });
+  const { data } = await copilotService.getCopilotRecommendations({ context, query, lang });
+
   return data;
 }
 

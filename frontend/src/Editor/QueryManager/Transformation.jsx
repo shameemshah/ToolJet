@@ -40,7 +40,7 @@ return [row for row in data if row['amount'] > 1000]
   const handleCallToGPT = async () => {
     setFetchingRecommendation(true);
     const query = state[lang];
-    const recommendation = await getRecommendation(queryId, currentState, query, lang);
+    const recommendation = await getRecommendation(currentState, query, lang);
     setFetchingRecommendation(false);
     changeOption('transformation', recommendation);
   };

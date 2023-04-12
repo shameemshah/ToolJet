@@ -34,16 +34,3 @@ export class CreateDataQueryDto {
 }
 
 export class UpdateDataQueryDto extends PartialType(CreateDataQueryDto) {}
-
-export class CopilotRequestDto {
-  @IsString()
-  @IsNotEmpty()
-  query: string;
-
-  @IsString()
-  @IsNotEmpty()
-  context: string;
-
-  @IsNotEmpty()
-  language: 'javascript' | 'python';
-}

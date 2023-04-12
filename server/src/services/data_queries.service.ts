@@ -476,29 +476,4 @@ export class DataQueriesService {
         .getMany();
     }, manager);
   }
-
-  async getCopilotRecommendations(copilotOptions: ICopilotOptions) {
-    const copilotAPIOpts = {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'x-Api-key': '460dd72cc609ada298384b685eafda98714fa50146d98c9831aea49fb36c2c70',
-      },
-      body: JSON.stringify({ ...copilotOptions }),
-    };
-
-    const response = await fetch('https://4f0uiuzrr2.execute-api.us-west-1.amazonaws.com/Prod/copilot', copilotAPIOpts);
-    const { data } = await response.json();
-
-    return {
-      data: data,
-      status: response.status,
-    };
-  }
-}
-
-interface ICopilotOptions {
-  query: string;
-  language: 'javascript' | 'python';
-  context: string;
 }

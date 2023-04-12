@@ -19,7 +19,7 @@ import { DataSourcesService } from '../../src/services/data_sources.service';
 import { QueryAuthGuard } from 'src/modules/auth/query-auth.guard';
 import { AppsAbilityFactory } from 'src/modules/casl/abilities/apps-ability.factory';
 import { AppsService } from '@services/apps.service';
-import { CreateDataQueryDto, UpdateDataQueryDto, CopilotRequestDto } from '@dto/data-query.dto';
+import { CreateDataQueryDto, UpdateDataQueryDto } from '@dto/data-query.dto';
 import { User } from 'src/decorators/user.decorator';
 import { decode } from 'js-base64';
 import { dbTransactionWrap } from 'src/helpers/utils.helper';
@@ -276,17 +276,5 @@ export class DataQueriesController {
     }
     await this.dataQueriesService.changeQueryDataSource(queryId, dataSourceId);
     return;
-  }
-
-  @UseGuards(JwtAuthGuard)
-  @Post(':id/copilot')
-  async getRecomendations(@User() user, @Param('id') queryId, @Body() copilotRequestDto: CopilotRequestDto) {
-    const dataQuery = queryId === 'draftQuery' || (await this.dataQueriesService.findOne(queryId));
-
-    let result = {};
-    if (dataQuery) {
-      result = await this.dataQueriesService.getCopilotRecommendations(copilotRequestDto);
-    }
-    return result;
   }
 }
