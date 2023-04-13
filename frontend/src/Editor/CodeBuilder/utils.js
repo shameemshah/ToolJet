@@ -18,15 +18,19 @@ export async function getRecommendation(currentContext, query, lang = 'javascrip
     );
   }
 
-  words.forEach((word) => {
-    results = results.concat(searchQuery(word, currentContext));
-  });
+  try {
+    words.forEach((word) => {
+      results = results.concat(searchQuery(word, currentContext));
+    });
 
-  const context = JSON.stringify(arrayToObject(results));
+    const context = JSON.stringify(arrayToObject(results));
 
-  const { data } = await copilotService.getCopilotRecommendations({ context, query, lang });
+    const { data } = await copilotService.getCopilotRecommendations({ context, query, lang });
 
-  return data;
+    return data;
+  } catch (error) {
+    console.error(error);
+  }
 }
 
 function getResult(suggestionList, query) {
@@ -286,9 +290,9 @@ function searchQuery(query, obj) {
   for (const key in obj) {
     const value = obj[key];
     if (value !== null && typeof value === 'object') {
-      results = results.concat(searchQuery(lcQuery, value));
+      results = results?.concat(searchQuery(lcQuery, value));
     } else {
-      if (key.toLowerCase().includes(lcQuery) || value.toString().toLowerCase().includes(lcQuery)) {
+      if (key?.toLowerCase()?.includes(lcQuery) || value?.toString()?.toLowerCase()?.includes(lcQuery)) {
         results.push({ key, value });
       }
     }
