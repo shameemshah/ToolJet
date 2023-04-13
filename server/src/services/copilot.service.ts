@@ -33,19 +33,16 @@ export class CopilotService {
     };
   }
 
-  async addUpdateCopilotAPIKey(apiKey: string, userId: string, action: string) {
+  async addUpdateCopilotAPIKey(apiKey: string, userId: string) {
     const options = {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ key: apiKey, user_id: userId, action: action }),
+      body: JSON.stringify({ key: apiKey, userId: userId, action: 'save' }),
     };
 
-    const response = await fetch(
-      'https://4f0uiuzrr2.execute-api.us-west-1.amazonaws.com/Prod/copilot/api-key',
-      options
-    );
+    const response = await fetch('https://0p94cxsi3g.execute-api.us-west-1.amazonaws.com/Prod/api-key', options);
     const { data } = await response.json();
 
     return {
@@ -56,21 +53,18 @@ export class CopilotService {
 
   async getCopilotAPIKey(userId: string) {
     const options = {
-      method: 'GET',
+      method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ user_id: userId }),
+      body: JSON.stringify({ userId: userId, action: 'get' }),
     };
 
-    const response = await fetch(
-      'https://4f0uiuzrr2.execute-api.us-west-1.amazonaws.com/Prod/copilot/api-key',
-      options
-    );
-    const { data } = await response.json();
+    const response = await fetch('https://0p94cxsi3g.execute-api.us-west-1.amazonaws.com/Prod/api-key', options);
+    const { apiKey } = await response.json();
 
     return {
-      data: data,
+      data: apiKey,
       status: response.status,
     };
   }

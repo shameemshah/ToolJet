@@ -3,7 +3,8 @@ import { authHeader, handleResponse } from '@/_helpers';
 
 export const copilotService = {
   getCopilotRecommendations,
-  getCopiletApiKey,
+  getCopilotApiKey,
+  saveCopilotApiKey,
 };
 
 async function getCopilotRecommendations(options) {
@@ -20,10 +21,12 @@ async function getCopilotRecommendations(options) {
   return data || {};
 }
 
-function getCopiletApiKey() {
-  const userId = localStorage.getItem('currentUser') ? JSON.parse(localStorage.getItem('currentUser')).id : null;
+function getCopilotApiKey() {
+  const requestOptions = { method: 'GET', headers: authHeader() };
+  return fetch(`${config.apiUrl}/copilot/api-key`, requestOptions).then(handleResponse);
+}
 
-  console.log('auth headers gpt', userId);
-  const requestOptions = { method: 'GET', headers: authHeader(), body: JSON.stringify({ userId }) };
+function saveCopilotApiKey(apiKey) {
+  const requestOptions = { method: 'POST', headers: authHeader(), body: JSON.stringify({ key: apiKey }) };
   return fetch(`${config.apiUrl}/copilot/api-key`, requestOptions).then(handleResponse);
 }

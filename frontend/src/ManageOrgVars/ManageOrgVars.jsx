@@ -6,6 +6,7 @@ import VariableForm from './VariableForm';
 import VariablesTable from './VariablesTable';
 // eslint-disable-next-line import/no-unresolved
 import { withTranslation } from 'react-i18next';
+import _ from 'lodash';
 class ManageOrgVarsComponent extends React.Component {
   constructor(props) {
     super(props);
@@ -70,8 +71,9 @@ class ManageOrgVarsComponent extends React.Component {
     });
 
     orgEnvironmentVariableService.getVariables().then((data) => {
+      const variables = _.cloneDeep(data.variables)?.filter(({ variable_name }) => variable_name !== 'copilot_api_key');
       this.setState({
-        variables: data.variables,
+        variables: variables,
         isLoading: false,
       });
     });

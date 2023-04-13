@@ -12,25 +12,20 @@ export class CopilotController {
   @Post()
   async getRecomendations(@User() user, @Body() body: CopilotRequestDto) {
     const userId = user.id;
-
-    // const apiKey = await this.copilotService.getCopilotAPIKey(userId);
-
-    console.log('-----API KEY-----', userId);
-
     return await this.copilotService.getCopilotRecommendations(body, userId);
   }
 
   @UseGuards(JwtAuthGuard)
-  @Post('/api-key')
+  @Post('api-key')
   async addUpdateCopilotAPIKey(@User() user, @Body() body: AddUpdateCopilitAPIKeyDto) {
-    const { action, key } = body;
+    const { key } = body;
     const userId = user.id;
-    return await this.copilotService.addUpdateCopilotAPIKey(key, userId, action);
+    return await this.copilotService.addUpdateCopilotAPIKey(key, userId);
   }
 
   @UseGuards(JwtAuthGuard)
-  @Get('/api-key')
-  async getCopilotAPIKey(@User() user, @Body() body) {
+  @Get('api-key')
+  async getCopilotAPIKey(@User() user) {
     return await this.copilotService.getCopilotAPIKey(user.id);
   }
 }

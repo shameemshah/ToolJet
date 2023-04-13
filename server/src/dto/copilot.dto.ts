@@ -17,7 +17,4 @@ export class AddUpdateCopilitAPIKeyDto {
   @IsString()
   @IsNotEmpty()
   key: string;
-
-  @IsNotEmpty()
-  action: 'insert' | 'update';
 }
