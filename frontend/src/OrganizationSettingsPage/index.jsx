@@ -92,20 +92,6 @@ export function OrganizationSettings(props) {
                     </svg>
                     &nbsp;{t('header.organization.menus.menusList.manageSso', 'SSO')}
                   </div>
-                  <div
-                    className={cx(
-                      'list-group-item h-4 cursor-pointer list-group-item-action d-flex align-items-center mb-1 border-0',
-                      {
-                        [selectedClassName]: selectedTab === 'manageCopilot',
-                        'text-white': props.darkMode,
-                      }
-                    )}
-                    onClick={() => setSelectedTab('manageCopilot')}
-                    data-cy="manage-sso-option"
-                  >
-                    <img src="/assets/images/icons/flash.svg" alt="copilot" height={16} width={16} />
-                    &nbsp;{t('header.organization.menus.menusList.manageCopilot', 'Copilot')}
-                  </div>
                 </>
               )}
               <div
@@ -128,6 +114,20 @@ export function OrganizationSettings(props) {
                   />
                 </svg>
                 &nbsp;{t('header.organization.menus.menusList.manageEnv', 'Manage Environment Variables')}
+              </div>
+              <div
+                className={cx(
+                  'list-group-item h-4 cursor-pointer list-group-item-action d-flex align-items-center mb-1 border-0',
+                  {
+                    [selectedClassName]: selectedTab === 'manageCopilot',
+                    'text-white': props.darkMode,
+                  }
+                )}
+                onClick={() => setSelectedTab('manageCopilot')}
+                data-cy="manage-sso-option"
+              >
+                <img src="/assets/images/icons/flash.svg" alt="copilot" height={16} width={16} />
+                &nbsp;{t('header.organization.menus.menusList.manageCopilot', 'Copilot')}
               </div>
             </div>
           </div>
