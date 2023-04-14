@@ -17,8 +17,8 @@ const Button = ({
   disabled = false,
   isLoading = false,
 }) => {
-  const baseHeight = size === 'sm' ? 28 : 40;
-  const baseWidth = size === 'sm' ? 92 : 150;
+  const baseHeight = size === 'sm' ? 28 : size === 'md' ? 36 : 40;
+  const baseWidth = size === 'sm' ? 92 : size === 'md' ? 100 : 150;
 
   const diabledStyles = {
     ...defaultDisabledStyles,
@@ -67,10 +67,12 @@ const Content = ({ title = null, iconSrc = null, direction = 'left', dataCy }) =
 };
 
 const UnstyledButton = ({ children, onClick, classNames = '', styles = {}, disabled = false, darkMode = false }) => {
+  const cursorNotPointer = onClick === undefined && { cursor: 'default' };
+
   return (
     <div
       type="button"
-      style={{ ...styles, ...(disabled ? defaultDisabledStyles : {}) }}
+      style={{ ...styles, ...(disabled ? defaultDisabledStyles : {}), ...cursorNotPointer }}
       className={`unstyled-button ${classNames} ${disabled && 'disabled'} ${darkMode && 'dark'}`}
       onClick={onClick}
     >

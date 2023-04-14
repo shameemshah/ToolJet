@@ -66,7 +66,8 @@ const Modal = ({ children, handleClose, portalStyles, styles, componentName, dar
     callgpt().then(() => setLoading(false));
   };
 
-  const includeGPT = ['Runjs', 'Runpy', 'transformation'].includes(componentName);
+  const isCopilotEnabled = localStorage.getItem('copilotEnabled') === 'true';
+  const includeGPT = ['Runjs', 'Runpy', 'transformation'].includes(componentName) && isCopilotEnabled;
 
   const renderModalContent = () => (
     <div className="modal-content" style={{ ...portalStyles, ...styles }}>
@@ -86,7 +87,7 @@ const Modal = ({ children, handleClose, portalStyles, styles, componentName, dar
         </div>
 
         {includeGPT && (
-          <div className='mx-2'>
+          <div className="mx-2">
             <Button
               onClick={handleCallGpt}
               darkMode={darkMode}

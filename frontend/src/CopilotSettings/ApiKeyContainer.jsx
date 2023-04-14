@@ -1,6 +1,14 @@
 import React, { useEffect, useState } from 'react';
+import { Button } from '@/_ui/LeftSidebar';
+import { Alert } from '@/_ui/Alert/';
 
-export const ApiKeyContainer = ({ copilotApiKey = '', handleOnSave, isLoading = false }) => {
+export const ApiKeyContainer = ({
+  copilotApiKey = '',
+  handleOnSave,
+  isLoading = false,
+  darkMode,
+  isCopilotEnabled,
+}) => {
   const [inputValue, setInputValue] = useState(copilotApiKey);
 
   const handleOnchange = (e) => {
@@ -14,12 +22,13 @@ export const ApiKeyContainer = ({ copilotApiKey = '', handleOnSave, isLoading = 
   return (
     <div className="container-xl mt-3">
       <div className="row">
-        <div class="mb-3 col-8">
-          <small className="text-green">
-            <img className="encrypted-icon" src="assets/images/icons/padlock.svg" width="12" height="12" />
-            <span className="text-success mx-2 font-500">API KEY</span>
-          </small>
+        <small className="text-green">
+          <img className="encrypted-icon" src="assets/images/icons/padlock2.svg" width="12" height="12" />
+          <span className="text-success mx-2 font-500">API KEY</span>
+        </small>
+        <div className="mb-3 col-6">
           <input
+            disabled={!isCopilotEnabled}
             type="password"
             class="form-control mt-2"
             name="example-text-input"
@@ -28,32 +37,39 @@ export const ApiKeyContainer = ({ copilotApiKey = '', handleOnSave, isLoading = 
             onChange={handleOnchange}
           />
         </div>
+        <div className="col-auto mt-1">
+          <Button
+            onClick={() => handleOnSave(inputValue)}
+            darkMode={darkMode}
+            size="md"
+            isLoading={isLoading}
+            styles={{ backgroundColor: '#3E63DD', color: '#fff' }}
+            disabled={!isCopilotEnabled}
+          >
+            <Button.Content title={'Save'} iconSrc={'assets/images/icons/save.svg'} />
+          </Button>
+        </div>
       </div>
 
-      <div
-        className={`btn btn-primary ${isLoading ? 'btn-loading' : ''}`}
-        data-cy="add-new-variables-button"
-        onClick={(e) => {
-          e.preventDefault();
-          handleOnSave(inputValue);
-        }}
-      >
-        Save
-      </div>
-
-      <div class="alert alert-warning mt-4" role="alert">
-        <h4 class="alert-title"> Don&apos;t have an API key?</h4>
-        <div class="text-muted">
-          <strong style={{ fontWeight: 700, color: '#3E63DD' }}>ToolJet Copilot </strong>
-          is currently in <strong style={{ fontWeight: 700, color: '#3E63DD' }}>beta</strong> and provided on request.
-          Join our waitlist to be notified when API keys become available, or sign up for beta access to get started
-          today.
-        </div>
-        <div className="mt-2">
-          <button type="button" className="btn btn-light mr-2">
-            Sign up for Beta Access
-          </button>
-        </div>
+      <div className="alert-container">
+        <Alert svg="alert-info" cls="copilot-alert" data-cy={`copilot-alert-info`}>
+          <h4 class="alert-title"> Don&apos;t have an API key?</h4>
+          <div class="text-muted">
+            <strong style={{ fontWeight: 700, color: '#3E63DD' }}>ToolJet Copilot </strong>
+            is currently in <strong style={{ fontWeight: 700, color: '#3E63DD' }}>beta</strong> and provided on request.
+            Join our waitlist to be notified when API keys become available, or sign up for beta access to get started
+            today.
+          </div>
+          <div className="mt-2 w-25">
+            <Button
+              darkMode={darkMode}
+              size="sm"
+              styles={{ width: '100%', fontSize: '12px', fontWeight: 500, borderColor: darkMode && 'transparent' }}
+            >
+              <Button.Content title={' Sign up for Beta Access'} />
+            </Button>
+          </div>
+        </Alert>
       </div>
     </div>
   );

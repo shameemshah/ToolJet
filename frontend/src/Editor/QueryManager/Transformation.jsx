@@ -6,7 +6,7 @@ import 'codemirror/addon/search/match-highlighter';
 import 'codemirror/addon/hint/show-hint.css';
 import { CodeHinter } from '../CodeBuilder/CodeHinter';
 import { getRecommendation } from '../CodeBuilder/utils';
-import { Popover, OverlayTrigger } from 'react-bootstrap';
+import { Popover, OverlayTrigger, Tooltip } from 'react-bootstrap';
 import { useTranslation } from 'react-i18next';
 import Select from '@/_ui/Select';
 import { useLocalStorageState } from '@/_hooks/use-local-storage';
@@ -36,6 +36,7 @@ return [row for row in data if row['amount'] > 1000]
   const [state, setState] = useLocalStorageState('transformation', defaultValue);
 
   const [fetchingRecommendation, setFetchingRecommendation] = useState(false);
+  const isCopilotEnabled = localStorage.getItem('copilotEnabled') === 'true';
 
   const handleCallToGPT = async () => {
     setFetchingRecommendation(true);
@@ -207,6 +208,24 @@ return [row for row in data if row['amount'] > 1000]
     );
   };
 
+  const ToolTipWrapper = ({ children, condition, tip }) => {
+    console.log('ToolTipWrapper', condition);
+
+    const renderTooltip = (props) => (
+      <Tooltip id="button-tooltip" {...props}>
+        {tip}
+      </Tooltip>
+    );
+
+    return condition ? (
+      <OverlayTrigger trigger={['focus', 'hover']} placement="top" overlay={renderTooltip} rootClose>
+        {children}
+      </OverlayTrigger>
+    ) : (
+      children
+    );
+  };
+
   return (
     <div className="field  transformation-editor">
       <div className="align-items-center gap-2" style={{ display: 'flex', position: 'relative', height: '20px' }}>
@@ -274,17 +293,20 @@ return [row for row in data if row['amount'] > 1000]
               />
             </div>
 
-            <div>
-              <Button
-                onClick={handleCallToGPT}
-                darkMode={darkMode}
-                size="sm"
-                classNames={`${fetchingRecommendation ? (darkMode ? 'btn-loading' : 'button-loading') : ''}`}
-                styles={{ width: '100%', fontSize: '12px', fontWeight: 500, borderColor: darkMode && 'transparent' }}
-              >
-                <Button.Content title={'Generate code ⌘+L'} />
-              </Button>
-            </div>
+            <ToolTipWrapper condition={!isCopilotEnabled} tip={'Activate Copilot in the workspace settings'}>
+              <div>
+                <Button
+                  onClick={handleCallToGPT}
+                  darkMode={darkMode}
+                  size="sm"
+                  classNames={`${fetchingRecommendation ? (darkMode ? 'btn-loading' : 'button-loading') : ''}`}
+                  styles={{ width: '100%', fontSize: '12px', fontWeight: 500, borderColor: darkMode && 'transparent' }}
+                  disabled={!isCopilotEnabled}
+                >
+                  <Button.Content title={'Generate code ⌘+L'} />
+                </Button>
+              </div>
+            </ToolTipWrapper>
           </div>
           <div className="border-top mx-3"></div>
           <CodeHinter
