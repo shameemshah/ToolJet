@@ -6,20 +6,20 @@ type ICopilotOptions = CopilotRequestDto;
 
 @Injectable()
 export class CopilotService {
-  async getCopilotRecommendations(copilotOptions: ICopilotOptions, userId: string) {
+  async getCopilotRecommendations(copilotOptions: ICopilotOptions, userId: string, apKey: string) {
     const { query, context, language } = copilotOptions;
 
     const response = await got('https://0p94cxsi3g.execute-api.us-west-1.amazonaws.com/Prod/copilot', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'x-api-key': '34c1fa1a86f8aefb790542c359ad5cdb7530b8696b68e6e5cc0716f1482a1527',
+        'x-api-key': apKey,
       },
       body: JSON.stringify({
         query: query,
         context: context,
         language: language,
-        userId: 'c4a0e6fc-f3a7-40cc-b1d2-adcd32ac16ac',
+        userId: userId,
       }),
     });
     console.log('---LAMBDA API RESPONSE---', {
