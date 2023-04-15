@@ -11,18 +11,37 @@ export const CopilotSetting = () => {
   const [copilotApiKey, setCopilotApiKey] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [state, setState] = useLocalStorageState('copilotEnabled', false);
+  const [copilotWorkspaceVarId, set] = useState(false);
 
   const saveCopilotApiKey = async (apikey) => {
     setIsLoading(true);
     const isCopilotApiKeyPresent = await fetchCopilotApiKey(apikey);
 
     return setTimeout(() => {
-      if (isCopilotApiKeyPresent === true) {
+      if (isCopilotApiKeyPresent === true && !copilotWorkspaceVarId) {
         return orgEnvironmentVariableService
           .create('copilot_api_key', apikey, 'server', false)
           .then(() => {
             setCopilotApiKey(apikey);
             toast.success('Copilot API key saved successfully');
+          })
+          .catch((err) => {
+            console.log(err);
+            return toast.error('Something went wrong');
+          })
+          .finally(() => setIsLoading(false));
+      }
+
+      if (isCopilotApiKeyPresent === true && copilotWorkspaceVarId) {
+        return orgEnvironmentVariableService
+          .update(copilotWorkspaceVarId, 'copilot_api_key', apikey)
+          .then(() => {
+            setCopilotApiKey(apikey);
+            toast.success('Copilot API key saved successfully');
+          })
+          .catch((err) => {
+            console.log(err);
+            return toast.error('Something went wrong');
           })
           .finally(() => setIsLoading(false));
       }
@@ -40,7 +59,7 @@ export const CopilotSetting = () => {
       copilotService
         .getCopilotApiKey()
         .then(({ data, status }) => {
-          if (status === 200 && data == apiKey) {
+          if (status === 200 && data === apiKey) {
             return resolve(true);
           }
 
@@ -55,8 +74,13 @@ export const CopilotSetting = () => {
   useEffect(() => {
     orgEnvironmentVariableService.getVariables().then((data) => {
       const isCopilotApiKeyPresent = data.variables.some((variable) => variable.variable_name === 'copilot_api_key');
-      console.log('---GPT KEY isCopilotApiKeyPresent', data.variables);
-      const shouldUpdate = isCopilotApiKeyPresent ? fetchCopilotApiKey(isCopilotApiKeyPresent) : false;
+      //   console.log('---GPT KEY isCopilotApiKeyPresent', isCopilotApiKeyPresent);
+
+      const copilotVariableId = data.variables.find((variable) => variable.variable_name === 'copilot_api_key')?.id;
+
+      const shouldUpdate = isCopilotApiKeyPresent
+        ? fetchCopilotApiKey(isCopilotApiKeyPresent) && set(copilotVariableId)
+        : false;
       if (shouldUpdate) {
         //place holder for api key whihc of 32 length, as we wont be sharing the actual key with the user
 
