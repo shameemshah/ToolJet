@@ -38,7 +38,7 @@ const ToolJetDbOperations = ({ currentState, optionchanged, options, darkMode })
 
   useEffect(() => {
     if (mounted) {
-      optionchanged('operation', operation);
+      optionchanged('operation', operation, true);
       setListRowsOptions({});
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -46,18 +46,18 @@ const ToolJetDbOperations = ({ currentState, optionchanged, options, darkMode })
 
   useEffect(() => {
     if (mounted) {
-      optionchanged('list_rows', listRowsOptions);
+      optionchanged('list_rows', listRowsOptions, true);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [listRowsOptions]);
 
   useEffect(() => {
-    mounted && optionchanged('delete_rows', deleteRowsOptions);
+    mounted && optionchanged('delete_rows', deleteRowsOptions, true);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [deleteRowsOptions]);
 
   useEffect(() => {
-    mounted && optionchanged('update_rows', updateRowsOptions);
+    mounted && optionchanged('update_rows', updateRowsOptions, true);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [updateRowsOptions]);
 
@@ -155,8 +155,8 @@ const ToolJetDbOperations = ({ currentState, optionchanged, options, darkMode })
     setSelectedTable(tableName);
     fetchTableInformation(tableName);
 
-    optionchanged('organization_id', organizationId);
-    optionchanged('table_name', tableName);
+    optionchanged('organization_id', organizationId, true);
+    optionchanged('table_name', tableName, true);
   };
 
   const getComponent = () => {

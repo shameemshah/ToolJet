@@ -29,6 +29,7 @@ const DynamicForm = ({
   optionsChanged,
   queryName,
   computeSelectStyles = false,
+  onBlur,
 }) => {
   const [computedProps, setComputedProps] = React.useState({});
 
@@ -130,6 +131,7 @@ const DynamicForm = ({
     ignoreBraces = false,
     className,
     controller,
+    autoSaveDataQuery,
   }) => {
     const source = schema?.source?.kind;
     const darkMode = localStorage.getItem('darkMode') === 'true';
@@ -148,19 +150,20 @@ const DynamicForm = ({
           ...(type === 'textarea' && { rows: rows }),
           ...(helpText && { helpText }),
           onChange: (e) => optionchanged(key, e.target.value),
+          onBlur: (e) => onBlur(key, e.target.value),
         };
       case 'toggle':
         return {
           defaultChecked: options?.[key],
           checked: options?.[key]?.value,
-          onChange: (e) => optionchanged(key, e.target.checked),
+          onChange: (e) => optionchanged(key, e.target.checked, true),
         };
       case 'dropdown':
       case 'dropdown-component-flip':
         return {
           options: list,
           value: options?.[key]?.value || options?.[key],
-          onChange: (value) => optionchanged(key, value),
+          onChange: (value) => optionchanged(key, value, true),
           width: width || '100%',
           useMenuPortal: queryName ? true : false,
           styles: computeSelectStyles ? computeSelectStyles('100%') : {},
@@ -172,7 +175,7 @@ const DynamicForm = ({
           options: list,
           values: options?.[key] ?? [],
           onChange: (value) => {
-            optionchanged(key, [...value]);
+            optionchanged(key, [...value], true);
           },
         };
 
@@ -222,6 +225,7 @@ const DynamicForm = ({
           options,
           isSaving,
           selectedDataSource,
+          onBlur,
         };
       case 'tooljetdb-operations':
         return {
@@ -244,7 +248,7 @@ const DynamicForm = ({
           mode,
           lineNumbers,
           className: className ? className : lineNumbers ? 'query-hinter' : 'codehinter-query-editor-input',
-          onChange: (value) => optionchanged(key, value),
+          onChange: (value) => optionchanged(key, value, true),
           theme: darkMode ? 'monokai' : lineNumbers ? 'duotone-light' : 'default',
           placeholder,
           height,

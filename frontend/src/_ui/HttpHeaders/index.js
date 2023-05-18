@@ -5,12 +5,12 @@ import SourceEditor from './SourceEditor';
 export default ({ getter, options = [['', '']], optionchanged, currentState, isRenderedAsQueryEditor }) => {
   function addNewKeyValuePair() {
     const newPairs = [...options, ['', '']];
-    optionchanged(getter, newPairs);
+    optionchanged(getter, newPairs, true);
   }
 
   function removeKeyValuePair(index) {
     options.splice(index, 1);
-    optionchanged(getter, options);
+    optionchanged(getter, options, true);
   }
 
   function keyValuePairValueChanged(value, keyIndex, index) {
@@ -20,7 +20,7 @@ export default ({ getter, options = [['', '']], optionchanged, currentState, isR
       }, 100);
     }
     options[index][keyIndex] = value;
-    optionchanged(getter, options);
+    optionchanged(getter, options, true);
   }
 
   const commonProps = {

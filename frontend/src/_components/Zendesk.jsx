@@ -4,7 +4,7 @@ import Input from '@/_ui/Input';
 import Radio from '@/_ui/Radio';
 import Button from '@/_ui/Button';
 
-const Zendesk = ({ optionchanged, createDataSource, options, isSaving, selectedDataSource }) => {
+const Zendesk = ({ optionchanged, createDataSource, options, isSaving, selectedDataSource, onBlur }) => {
   const [authStatus, setAuthStatus] = useState(null);
 
   function authZendesk() {
@@ -16,8 +16,8 @@ const Zendesk = ({ optionchanged, createDataSource, options, isSaving, selectedD
     try {
       const authUrl = `https://${options?.subdomain?.value}.zendesk.com/oauth/authorizations/new?response_type=code&client_id=${options?.client_id?.value}&redirect_uri=${window.location.origin}/oauth2/authorize&scope=${scope}`;
       localStorage.setItem('sourceWaitingForOAuth', 'newSource');
-      optionchanged('provider', provider).then(() => {
-        optionchanged('oauth2', true);
+      optionchanged('provider', provider, true).then(() => {
+        optionchanged('oauth2', true, true);
       });
       setAuthStatus('waiting_for_token');
       window.open(authUrl);
@@ -28,7 +28,7 @@ const Zendesk = ({ optionchanged, createDataSource, options, isSaving, selectedD
   }
 
   function saveDataSource() {
-    optionchanged('code', localStorage.getItem('OAuthCode')).then(() => {
+    optionchanged('code', localStorage.getItem('OAuthCode'), true).then(() => {
       createDataSource();
     });
   }
@@ -44,6 +44,7 @@ const Zendesk = ({ optionchanged, createDataSource, options, isSaving, selectedD
             onChange={(e) => optionchanged('subdomain', e.target.value)}
             value={options?.subdomain?.value ?? ''}
             placeholder="e.g. tooljet"
+            onBlur={onBlur}
           />
         </div>
 
@@ -55,6 +56,7 @@ const Zendesk = ({ optionchanged, createDataSource, options, isSaving, selectedD
             onChange={(e) => optionchanged('client_id', e.target.value)}
             value={options?.client_id?.value}
             placeholder="e.g. tj-zendesk"
+            onBlur={onBlur}
           />
         </div>
         <div className="col-md-12 mb-2">
@@ -70,6 +72,7 @@ const Zendesk = ({ optionchanged, createDataSource, options, isSaving, selectedD
             className="form-control"
             onChange={(e) => optionchanged('client_secret', e.target.value)}
             value={options?.client_secret?.value}
+            onBlur={onBlur}
           />
         </div>
 
@@ -83,14 +86,14 @@ const Zendesk = ({ optionchanged, createDataSource, options, isSaving, selectedD
               <Radio
                 checked={options?.access_type?.value === 'read'}
                 disabled={authStatus === 'waiting_for_token'}
-                onClick={() => optionchanged('access_type', 'read')}
+                onClick={() => optionchanged('access_type', 'read', true)}
                 text="Read only"
                 helpText="Your ToolJet apps can only read data from resources"
               />
               <Radio
                 checked={options?.access_type?.value === 'write'}
                 disabled={authStatus === 'waiting_for_token'}
-                onClick={() => optionchanged('access_type', 'write')}
+                onClick={() => optionchanged('access_type', 'write', true)}
                 text="Read and write"
                 helpText="Your ToolJet apps can read data from resources, modify resources, and more."
               />
