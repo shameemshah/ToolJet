@@ -18,12 +18,18 @@ export const DropDown = function DropDown({
 }) {
   let { label, value, advanced, schema, placeholder, display_values, values } = properties;
   const { selectedTextColor, borderRadius, visibility, disabledState, justifyContent } = styles;
-  const [currentValue, setCurrentValue] = useState(() => value);
-
+  const [currentValue, setCurrentValue] = useState(() => (advanced ? findDefaultItem(schema) : value));
   const { value: exposedValue } = exposedVariables;
+
+  function findDefaultItem(schema) {
+    const foundItem = schema?.find((item) => item.default === true);
+    return foundItem ? foundItem.value : null;
+  }
+
   if (advanced) {
     values = schema.map((item) => item.value);
     display_values = schema.map((item) => item.label);
+    value = findDefaultItem(schema);
   } else if (!_.isArray(values)) {
     values = [];
   }
@@ -122,9 +128,13 @@ export const DropDown = function DropDown({
   }, [label]);
 
   useEffect(() => {
-    setExposedVariable('optionLabels', display_values);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [JSON.stringify(display_values)]);
+    if (advanced) {
+      setExposedVariable(
+        'optionLabels',
+        schema?.filter((item) => item.visible)?.map((item) => item.label)
+      );
+    } else setExposedVariable('optionLabels', display_values);
+  }, [JSON.stringify(schema), advanced, JSON.stringify(display_values)]);
 
   const onSearchTextChange = (searchText, actionProps) => {
     if (actionProps.action === 'input-change') {
@@ -170,19 +180,19 @@ export const DropDown = function DropDown({
     option: (provided, state) => {
       const styles = darkMode
         ? {
-            color: 'white',
+            color: state.isDisabled ? '#889096' : 'white',
             backgroundColor: state.value === currentValue ? '#3650AF' : 'rgb(31,40,55)',
             ':hover': {
-              backgroundColor: state.value === currentValue ? '#1F2E64' : '#323C4B',
+              backgroundColor: state.isDisabled ? '#F1F3F5' : state.value === currentValue ? '#1F2E64' : '#323C4B',
             },
             maxWidth: 'auto',
             minWidth: 'max-content',
           }
         : {
             backgroundColor: state.value === currentValue ? '#7A95FB' : 'white',
-            color: state.value === currentValue ? 'white' : 'black',
+            color: state.isDisabled ? '#889096' : state.value === currentValue ? 'white' : 'black',
             ':hover': {
-              backgroundColor: state.value === currentValue ? '#3650AF' : '#d8dce9',
+              backgroundColor: state.isDisabled ? '#F1F3F5' : state.value === currentValue ? '#3650AF' : '#d8dce9',
             },
             maxWidth: 'auto',
             minWidth: 'max-content',
@@ -202,7 +212,6 @@ export const DropDown = function DropDown({
       backgroundColor: darkMode ? 'rgb(31,40,55)' : 'white',
     }),
   };
-
   return (
     <>
       <div
