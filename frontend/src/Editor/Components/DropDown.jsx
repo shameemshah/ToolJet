@@ -133,8 +133,20 @@ export const DropDown = function DropDown({
         'optionLabels',
         schema?.filter((item) => item.visible)?.map((item) => item.label)
       );
+      if (hasVisibleFalse(currentValue)) {
+        setCurrentValue(findDefaultItem(schema));
+      }
     } else setExposedVariable('optionLabels', display_values);
   }, [JSON.stringify(schema), advanced, JSON.stringify(display_values)]);
+
+  function hasVisibleFalse(value) {
+    for (let i = 0; i < schema?.length; i++) {
+      if (schema[i].value === value && schema[i].visible === false) {
+        return true;
+      }
+    }
+    return false;
+  }
 
   const onSearchTextChange = (searchText, actionProps) => {
     if (actionProps.action === 'input-change') {
