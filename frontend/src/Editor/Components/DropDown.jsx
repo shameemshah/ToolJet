@@ -16,23 +16,35 @@ export const DropDown = function DropDown({
   registerAction,
   dataCy,
 }) {
-  let { label, value, display_values, values } = properties;
+  let { label, value, advanced, schema, placeholder, display_values, values } = properties;
   const { selectedTextColor, borderRadius, visibility, disabledState, justifyContent } = styles;
   const [currentValue, setCurrentValue] = useState(() => value);
-  const { value: exposedValue } = exposedVariables;
 
-  if (!_.isArray(values)) {
+  const { value: exposedValue } = exposedVariables;
+  if (advanced) {
+    values = schema.map((item) => item.value);
+    display_values = schema.map((item) => item.label);
+  } else if (!_.isArray(values)) {
     values = [];
   }
 
   let selectOptions = [];
 
   try {
-    selectOptions = [
-      ...values.map((value, index) => {
-        return { label: display_values[index], value: value };
-      }),
-    ];
+    selectOptions = advanced
+      ? [
+          ...schema
+            .filter((data) => data.visible)
+            .map((value) => ({
+              ...value,
+              isDisabled: value.disable,
+            })),
+        ]
+      : [
+          ...values.map((value, index) => {
+            return { label: display_values[index], value: value };
+          }),
+        ];
   } catch (err) {
     console.log(err);
   }
@@ -77,20 +89,21 @@ export const DropDown = function DropDown({
       newValue = value;
       index = values.indexOf(value);
     }
+    console.log('xxx', newValue, index);
     setExposedItem(newValue, index);
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [value, JSON.stringify(display_values)]);
+  }, [value, JSON.stringify(values)]);
 
   useEffect(() => {
     let index = null;
     if (exposedValue !== currentValue) {
       setExposedVariable('value', currentValue);
-      index = values.indexOf(currentValue);
-      setExposedVariable('selectedOptionLabel', display_values?.[index]);
     }
+    index = values.indexOf(currentValue);
+    setExposedVariable('selectedOptionLabel', display_values?.[index]);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [currentValue]);
+  }, [currentValue, JSON.stringify(display_values), JSON.stringify(values)]);
 
   useEffect(() => {
     let newValue = undefined;
@@ -208,9 +221,7 @@ export const DropDown = function DropDown({
         <div className="col px-0 h-100">
           <Select
             isDisabled={disabledState}
-            value={
-              selectOptions.filter((option) => option.value === currentValue)[0] ?? { label: '', value: undefined }
-            }
+            value={selectOptions.filter((option) => option.value === currentValue)[0] ?? null}
             onChange={(selectedOption, actionProps) => {
               if (actionProps.action === 'select-option') {
                 setCurrentValue(selectedOption.value);
@@ -224,6 +235,7 @@ export const DropDown = function DropDown({
             onInputChange={onSearchTextChange}
             onFocus={(event) => onComponentClick(event, component, id)}
             menuPortalTarget={document.body}
+            placeholder={placeholder}
           />
         </div>
       </div>
