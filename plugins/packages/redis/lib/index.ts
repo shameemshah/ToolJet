@@ -8,18 +8,55 @@ export default class RedisQueryService implements QueryService {
     const query = queryOptions.query;
 
     const client = await this.getConnection(sourceOptions);
+    // Solution 1
+    // const regex2 = /'([^']*)'|\s+/
+    // const splitQuery = query.split(regex2).filter(Boolean);
 
     try {
-      const splitQuery = query.split(' ');
-      const command = splitQuery[0];
-      const args = splitQuery.length > 0 ? splitQuery.slice(1) : [];
-      result = await client.call(command, args);
-    } catch (err) {
-      client.disconnect();
-      throw new QueryError('Query could not be completed', err.message, {});
-    }
+      const [command, args] = await this.parseQueryArguments(query);
+      console.log('Command', command, 'Args', args);
 
-    return { status: 'ok', data: result };
+      // const splitQuery = query.split(regex2).filter(Boolean);
+      // const command = splitQuery[0];
+      // const args = splitQuery.length > 0 ? splitQuery.slice(1) : [];
+
+      result = await client.call(command, ...args);
+      return { status: 'ok', data: result };
+    } catch (err) {
+      throw new QueryError('Query could not be completed', err.message, {});
+    } finally {
+      client.disconnect();
+    }
+  }
+
+  async parseQueryArguments(query: string): Promise<[string, (string | number | Buffer)[]]> {
+    const args: (string | number | Buffer)[] = [];
+    const regex = /"([^"]+)"|'([^']+)'/g;
+
+    let match;
+    let lastIndex = 0;
+
+    while ((match = regex.exec(query)) !== null) {
+      const arg = match[1] || match[2]; // Use the captured group without quotes
+
+      const prefix = query.slice(lastIndex, match.index).trim();
+      if (prefix) {
+        const prefixArgs = prefix.split(' ');
+        args.push(...prefixArgs);
+      }
+      args.push(arg);
+      lastIndex = regex.lastIndex;
+    }
+    const remainingArgs = query.slice(lastIndex).trim();
+    if (remainingArgs) {
+      args.push(...remainingArgs.split(' '));
+    }
+    // const remainingArgs = query.slice(lastIndex).trim().split(' ');
+
+    console.log('Final Args', args);
+    const command = args.shift() as string;
+
+    return [command, args];
   }
 
   async testConnection(sourceOptions: SourceOptions): Promise<ConnectionTestResult> {
