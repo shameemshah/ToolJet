@@ -47,13 +47,9 @@ export default class RedisQueryService implements QueryService {
       args.push(arg);
       lastIndex = regex.lastIndex;
     }
-    const remainingArgs = query.slice(lastIndex).trim();
-    if (remainingArgs) {
-      args.push(...remainingArgs.split(' '));
-    }
-    // const remainingArgs = query.slice(lastIndex).trim().split(' ');
 
-    console.log('Final Args', args);
+    args.push(...query.slice(lastIndex).trim().split(' ').filter(Boolean));
+    // const remainingArgs = query.slice(lastIndex).trim().split(' ');
     const command = args.shift() as string;
 
     return [command, args];
