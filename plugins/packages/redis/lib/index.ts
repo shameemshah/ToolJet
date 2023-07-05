@@ -14,7 +14,7 @@ export default class RedisQueryService implements QueryService {
 
     try {
       const [command, args] = await this.parseQueryArguments(query);
-      console.log('Command', command, 'Args', args);
+      console.log('Solution 2 Response -----', 'Command', command, 'Args', args);
 
       // const splitQuery = query.split(regex2).filter(Boolean);
       // const command = splitQuery[0];
@@ -31,6 +31,7 @@ export default class RedisQueryService implements QueryService {
 
   async parseQueryArguments(query: string): Promise<[string, (string | number | Buffer)[]]> {
     const args: (string | number | Buffer)[] = [];
+    // Regex Solution we Found
     const regex = /"([^"]+)"|'([^']+)'/g;
 
     let match;
