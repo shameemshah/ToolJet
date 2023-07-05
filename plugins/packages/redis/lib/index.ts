@@ -29,32 +29,50 @@ export default class RedisQueryService implements QueryService {
     }
   }
 
-  async parseQueryArguments(query: string): Promise<[string, (string | number | Buffer)[]]> {
-    const args: (string | number | Buffer)[] = [];
-    // Regex Solution we Found
-    const regex = /"([^"]+)"|'([^']+)'/g;
+  parseQueryArguments(query: string) {
+    // Regular expression pattern to match the desired values
+    const regexPattern = /(\b\w+\b)|'([^']*)'|\[(.*?)\]|({.*?})/g;
+
+    // Array to store the parsed values
+    const parsedValues = [];
 
     let match;
-    let lastIndex = 0;
-
-    while ((match = regex.exec(query)) !== null) {
-      const arg = match[1] || match[2]; // Use the captured group without quotes
-
-      const prefix = query.slice(lastIndex, match.index).trim();
-      if (prefix) {
-        const prefixArgs = prefix.split(' ');
-        args.push(...prefixArgs);
-      }
-      args.push(arg);
-      lastIndex = regex.lastIndex;
+    while ((match = regexPattern.exec(query)) !== null) {
+      const value = match[1] || match[2] || match[3] || match[4];
+      parsedValues.push(value);
     }
 
-    args.push(...query.slice(lastIndex).trim().split(' ').filter(Boolean));
-    // const remainingArgs = query.slice(lastIndex).trim().split(' ');
-    const command = args.shift() as string;
+    const command = parsedValues.shift() as string;
 
-    return [command, args];
+    return [command, parsedValues];
   }
+
+  // async parseQueryArguments(query: string): Promise<[string, (string | number | Buffer)[]]> {
+  //   const args: (string | number | Buffer)[] = [];
+  //   // Regex Solution we Found
+  //   const regex = /"([^"]+)"|'([^']+)'/g;
+
+  //   let match;
+  //   let lastIndex = 0;
+
+  //   while ((match = regex.exec(query)) !== null) {
+  //     const arg = match[1] || match[2]; // Use the captured group without quotes
+
+  //     const prefix = query.slice(lastIndex, match.index).trim();
+  //     if (prefix) {
+  //       const prefixArgs = prefix.split(' ');
+  //       args.push(...prefixArgs);
+  //     }
+  //     args.push(arg);
+  //     lastIndex = regex.lastIndex;
+  //   }
+
+  //   args.push(...query.slice(lastIndex).trim().split(' ').filter(Boolean));
+  //   // const remainingArgs = query.slice(lastIndex).trim().split(' ');
+  //   const command = args.shift() as string;
+
+  //   return [command, args];
+  // }
 
   async testConnection(sourceOptions: SourceOptions): Promise<ConnectionTestResult> {
     const client = await this.getConnection(sourceOptions);
