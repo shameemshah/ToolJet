@@ -6,6 +6,7 @@ export default class RedisQueryService implements QueryService {
   async run(sourceOptions: SourceOptions, queryOptions: QueryOptions, dataSourceId: string): Promise<QueryResult> {
     let result = {};
     const query = queryOptions.query;
+    console.log('query 1', query);
 
     const client = await this.getConnection(sourceOptions);
     // Solution 1
@@ -19,7 +20,7 @@ export default class RedisQueryService implements QueryService {
       // const splitQuery = query.split(regex2).filter(Boolean);
       // const command = splitQuery[0];
       // const args = splitQuery.length > 0 ? splitQuery.slice(1) : [];
-
+      // [SET, test, test]
       result = await client.call(command, ...args);
       return { status: 'ok', data: result };
     } catch (err) {
@@ -29,19 +30,20 @@ export default class RedisQueryService implements QueryService {
     }
   }
 
-  parseQueryArguments(query: string) {
+  async parseQueryArguments(query: string): Promise<[string, (string | number | Buffer)[]]> {
     // Regular expression pattern to match the desired values
     const regexPattern = /(\b\w+\b)|'([^']*)'|\[(.*?)\]|({.*?})/g;
-
+    // const regexPattern = /'([^']*)'|"([^"]*)"|(\{[^}]*\})|\[([^[\]]*)\]|\b(\w+)\b/g;
+    console.log('query', query);
     // Array to store the parsed values
     const parsedValues = [];
 
     let match;
     while ((match = regexPattern.exec(query)) !== null) {
-      const value = match[1] || match[2] || match[3] || match[4];
+      const value = match[1] || match[2] || match[3];
       parsedValues.push(value);
     }
-
+    console.log('parsedValues', parsedValues);
     const command = parsedValues.shift() as string;
 
     return [command, parsedValues];
