@@ -78,6 +78,7 @@ export function onComponentOptionChanged(_ref, component, option_name, value) {
   let componentData = components[componentName];
   componentData = componentData || {};
   componentData[option_name] = value;
+  console.log('componentData----', componentData);
 
   return setCurrentStateAsync(_ref, {
     components: { ...components, [componentName]: componentData },
@@ -1196,7 +1197,7 @@ export function computeComponentState(_ref, components = {}) {
 
     const existingComponentName = Object.keys(currentComponents).find((comp) => currentComponents[comp].id === key);
     const existingValues = currentComponents[existingComponentName];
-
+    console.log('component.parent--->>>', component.parent, componentState);
     if (component.parent) {
       const parentComponent = components[component.parent];
       let isListView = false,
@@ -1214,6 +1215,18 @@ export function computeComponentState(_ref, components = {}) {
           id: key,
           ...existingValues,
         };
+      } else {
+        console.log('component---', component);
+        // Ensure item.data['children'] is initialized as an object
+        if (!Object.values(componentState)[0]['children']) {
+          Object.values(componentState)[0]['children'] = {};
+        }
+        // Set the  Object.values(componentState)[0] data under the appropriate key
+        Object.values(componentState)[0]['children'][component.component.name] = {
+          ...componentMeta.exposedVariables,
+          id: key,
+          ...existingValues,
+        };
       }
     } else {
       componentState[component.component.name] = {
@@ -1223,6 +1236,7 @@ export function computeComponentState(_ref, components = {}) {
       };
     }
   });
+  console.log('final state----', componentState);
 
   return setStateAsync(_ref, {
     currentState: {

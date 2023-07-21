@@ -311,6 +311,13 @@ export const Box = function Box({
               setExposedVariable={(variable, value) => onComponentOptionChanged(component, variable, value, id)}
               setExposedVariables={(variableSet) => onComponentOptionsChanged(component, Object.entries(variableSet))}
               registerAction={(actionName, func, dependencies = []) => {
+                // if(currentState)
+                console.log('currentstate is', currentState);
+                console.log('currentState?.components ---', component, id);
+                if (component?.parent) {
+                  console.log('parentid---', component?.parent);
+                }
+
                 if (
                   Object.keys(currentState?.components ?? {}).includes(component.name) &&
                   currentState?.components[component.name].id === id
