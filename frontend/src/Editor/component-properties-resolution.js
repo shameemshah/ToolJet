@@ -1,5 +1,27 @@
 import { resolveReferences } from '@/_helpers/utils';
 
+var resolvePropertiesCalls = 0;
+var resolveStylesCalls = 0;
+var resolveGeneralPropertiesCalls = 0;
+var resolveGeneralStylesCalls = 0;
+
+const abc = (val, currentState, defaultValue, customResolvables, calledFrom = '') => {
+  switch (calledFrom) {
+    case 'prop':
+      // console.log('calls--- comp resolveProperties--- ', ++resolvePropertiesCalls);
+      return resolveReferences(val, currentState, defaultValue, customResolvables);
+    case 'style':
+      // console.log('calls--- comp resolveStyles--- ', ++resolvePropertiesCalls);
+      return resolveReferences(val, currentState, defaultValue, customResolvables);
+    case 'general':
+      // console.log('calls--- comp resolveGeneralProperties--- ', ++resolvePropertiesCalls);
+      return resolveReferences(val, currentState, defaultValue, customResolvables);
+    case 'generalStyle':
+      // console.log('calls--- comp resolveGeneralStyles--- ', ++resolvePropertiesCalls);
+      return resolveReferences(val, currentState, defaultValue, customResolvables);
+  }
+};
+
 export const resolveProperties = (component, currentState, defaultValue, customResolvables) => {
   if (currentState) {
     return Object.entries(component.definition.properties).reduce(
@@ -8,7 +30,7 @@ export const resolveProperties = (component, currentState, defaultValue, customR
         ...{
           [entry[0]]: entry[1]?.skipResolve
             ? entry[1].value
-            : resolveReferences(entry[1].value, currentState, defaultValue, customResolvables),
+            : abc(entry[1].value, currentState, defaultValue, customResolvables, 'prop'),
         },
       }),
       {}
@@ -23,7 +45,7 @@ export const resolveStyles = (component, currentState, defaultValue, customResol
       const key = entry[0];
       const value = entry[1]?.skipResolve
         ? entry[1].value
-        : resolveReferences(entry[1].value, currentState, defaultValue, customResolvables);
+        : abc(entry[1].value, currentState, defaultValue, customResolvables, 'style');
       return {
         ...resolvedStyles,
         ...{ [key]: value },
@@ -41,7 +63,7 @@ export const resolveGeneralProperties = (component, currentState, defaultValue, 
       const key = entry[0];
       const value = entry[1]?.skipResolve
         ? entry[1].value
-        : resolveReferences(entry[1].value, currentState, defaultValue, customResolvables);
+        : abc(entry[1].value, currentState, defaultValue, customResolvables, 'general');
       return {
         ...resolvedGeneral,
         ...{ [key]: value },
@@ -59,7 +81,7 @@ export const resolveGeneralStyles = (component, currentState, defaultValue, cust
       const key = entry[0];
       const value = entry[1]?.skipResolve
         ? entry[1].value
-        : resolveReferences(entry[1].value, currentState, defaultValue, customResolvables);
+        : abc(entry[1].value, currentState, defaultValue, customResolvables, 'generalStyle');
       return {
         ...resolvedGeneral,
         ...{ [key]: value },

@@ -31,6 +31,15 @@ import { useDataQueriesStore } from '@/_stores/dataQueriesStore';
 import { useQueryPanelStore } from '@/_stores/queryPanelStore';
 import { useCurrentStateStore, getCurrentState } from '@/_stores/currentStateStore';
 import { useAppVersionStore } from '@/_stores/appVersionStore';
+import { useEditorStore } from '@/_stores/editorStore';
+import { useResolvedStore } from '@/_stores/resolvedStore';
+import {
+  resolveProperties,
+  resolveStyles,
+  resolveGeneralProperties,
+  resolveGeneralStyles,
+} from '@/Editor/component-properties-resolution';
+import { validateProperties } from '@/Editor/component-properties-validation';
 
 const ERROR_TYPES = Object.freeze({
   ReferenceError: 'ReferenceError',
@@ -74,9 +83,10 @@ export function onComponentOptionsChanged(_ref, component, options) {
   return Promise.resolve();
 }
 
-export function onComponentOptionChanged(_ref, component, option_name, value) {
+export function onComponentOptionChanged(_ref, component, option_name, value, id = undefined) {
   const componentName = component.name;
   const components = getCurrentState().components;
+  const c = _ref.state.appDefinition.pages[_ref.state.currentPageId]?.components;
 
   let componentData = components[componentName];
   componentData = componentData || {};
@@ -84,6 +94,29 @@ export function onComponentOptionChanged(_ref, component, option_name, value) {
   useCurrentStateStore.getState().actions.setCurrentState({
     components: { ...components, [componentName]: componentData },
   });
+  if (id) {
+    const values = useResolvedStore.getState();
+    const linkedIds = values[id]?.linkedIds || undefined;
+
+    if (linkedIds) {
+      let componentResolvedState = useResolvedStore.getState();
+
+      Object.keys(linkedIds).forEach((key) => {
+        const [validatedProperties, validatedGeneralProperties, validatedStyles, validatedGeneralStyles] =
+          resolveComponentValues(key, c, 'edit');
+        componentResolvedState = {
+          ...componentResolvedState,
+          [key]: {
+            ...componentResolvedState[key],
+            properties: validatedProperties,
+            styles: { ...validatedStyles, boxShadow: validatedGeneralStyles?.boxShadow },
+            generalProperties: validatedGeneralProperties,
+          },
+        };
+      });
+      useResolvedStore.getState().actions.setResolvedState(componentResolvedState);
+    }
+  }
   return Promise.resolve();
 }
 
@@ -1126,8 +1159,9 @@ export function renderTooltip({ props, text }) {
   );
 }
 
-export function computeComponentState(_ref, components = {}) {
+export function computeComponentState(_ref, components = {}, mode = 'edit') {
   let componentState = {};
+  let componentResolvedState = useResolvedStore.getState();
   const currentComponents = getCurrentState().components;
   Object.keys(components).forEach((key) => {
     const component = components[key];
@@ -1168,10 +1202,57 @@ export function computeComponentState(_ref, components = {}) {
     },
   });
 
+  Object.keys(components).forEach((key) => {
+    const [validatedProperties, validatedGeneralProperties, validatedStyles, validatedGeneralStyles] =
+      resolveComponentValues(key, components, mode);
+    componentResolvedState = {
+      ...componentResolvedState,
+      [key]: {
+        ...componentResolvedState[key],
+        properties: validatedProperties,
+        styles: { ...validatedStyles, boxShadow: validatedGeneralStyles?.boxShadow },
+        generalProperties: validatedGeneralProperties,
+      },
+    };
+  });
+  useResolvedStore.getState().actions.setResolvedState(componentResolvedState);
   return setStateAsync(_ref, {
     defaultComponentStateComputed: true,
   });
 }
+
+const resolveComponentValues = (key, components = {}, mode) => {
+  const component = components[key]?.component;
+  const componentMeta = componentTypes.find((comp) => component.component === comp.component);
+  const customResolvables = {};
+
+  const resolvedProperties = resolveProperties(component, getCurrentState(), null);
+  const [validatedProperties, propertyErrors] =
+    mode === 'edit' && component.validate
+      ? validateProperties(resolvedProperties, componentMeta?.properties)
+      : [resolvedProperties, []];
+
+  const resolvedStyles = resolveStyles(component, getCurrentState(), null, customResolvables);
+  const [validatedStyles, styleErrors] =
+    mode === 'edit' && component.validate
+      ? validateProperties(resolvedStyles, componentMeta?.styles)
+      : [resolvedStyles, []];
+  validatedStyles.visibility = validatedStyles.visibility !== false ? true : false;
+
+  const resolvedGeneralProperties = resolveGeneralProperties(component, getCurrentState(), null, customResolvables);
+  const [validatedGeneralProperties, generalPropertiesErrors] =
+    mode === 'edit' && component.validate
+      ? validateProperties(resolvedGeneralProperties, componentMeta?.general)
+      : [resolvedGeneralProperties, []];
+
+  const resolvedGeneralStyles = resolveGeneralStyles(component, getCurrentState(), null, customResolvables);
+  resolvedStyles.visibility = resolvedStyles.visibility !== false ? true : false;
+  const [validatedGeneralStyles, generalStylesErrors] =
+    mode === 'edit' && component.validate
+      ? validateProperties(resolvedGeneralStyles, componentMeta?.generalStyles)
+      : [resolvedGeneralStyles, []];
+  return [validatedProperties, validatedGeneralProperties, validatedStyles, validatedGeneralStyles];
+};
 
 export const getSvgIcon = (key, height = 50, width = 50, iconFile = undefined, styles = {}) => {
   if (iconFile) return <img src={`data:image/svg+xml;base64,${iconFile}`} style={{ height, width }} />;
@@ -1313,7 +1394,8 @@ const updateNewComponents = (pageId, appDefinition, newComponents, updateAppDefi
 };
 
 export const cloneComponents = (_ref, updateAppDefinition, isCloning = true, isCut = false) => {
-  const { selectedComponents, appDefinition, currentPageId } = _ref.state;
+  const selectedComponents = useEditorStore.getState().selectedComponents;
+  const { appDefinition, currentPageId } = _ref.state;
   if (selectedComponents.length < 1) return getSelectedText();
   const { components: allComponents } = appDefinition.pages[currentPageId];
   let newDefinition = _.cloneDeep(appDefinition);

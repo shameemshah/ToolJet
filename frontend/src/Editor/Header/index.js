@@ -13,6 +13,7 @@ import config from 'config';
 // eslint-disable-next-line import/no-unresolved
 import { useUpdatePresence } from '@y-presence/react';
 import { useAppVersionStore } from '@/_stores/appVersionStore';
+import { getPageState } from '@/_stores/currentStateStore';
 import { shallow } from 'zustand/shallow';
 
 export default function EditorHeader({
@@ -21,7 +22,6 @@ export default function EditorHeader({
   appDefinition,
   toggleAppMaintenance,
   app,
-  appVersionPreviewLink,
   slug,
   appId,
   canUndo,
@@ -46,6 +46,9 @@ export default function EditorHeader({
     }),
     shallow
   );
+  const handle = getPageState();
+
+  const appVersionPreviewLink = editingVersion ? `/applications/${app.id}/versions/${editingVersion.id}/${handle}` : '';
 
   const updatePresence = useUpdatePresence();
   useEffect(() => {

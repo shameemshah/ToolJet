@@ -120,7 +120,7 @@ export const DraggableBox = React.memo(
       }),
       shallow
     );
-    const currentState = useCurrentState();
+    // const currentState = useCurrentState();
 
     const [{ isDragging }, drag, preview] = useDrag(
       () => ({
@@ -195,10 +195,11 @@ export const DraggableBox = React.memo(
     const gridWidth = canvasWidth / 43;
     const width = (canvasWidth * layoutData.width) / 43;
 
-    const configWidgetHandlerForModalComponent =
-      !isSelectedComponent &&
-      component.component === 'Modal' &&
-      resolveWidgetFieldValue(component.definition.properties.useDefaultButton, currentState)?.value === false;
+    const configWidgetHandlerForModalComponent = false;
+    // const configWidgetHandlerForModalComponent =
+    //   !isSelectedComponent &&
+    //   component.component === 'Modal' &&
+    //   resolveWidgetFieldValue(component.definition.properties.useDefaultButton, currentState)?.value === false;
 
     const onComponentHover = (id) => {
       if (selectionInProgress) return;
@@ -304,7 +305,7 @@ export const DraggableBox = React.memo(
                     onComponentOptionChanged={onComponentOptionChanged}
                     onComponentOptionsChanged={onComponentOptionsChanged}
                     onComponentClick={onComponentClick}
-                    currentState={currentState}
+                    // currentState={currentState}
                     containerProps={containerProps}
                     darkMode={darkMode}
                     removeComponent={removeComponent}
@@ -333,7 +334,7 @@ export const DraggableBox = React.memo(
                 onComponentOptionChanged={onComponentOptionChanged}
                 onComponentOptionsChanged={onComponentOptionsChanged}
                 onComponentClick={onComponentClick}
-                currentState={currentState}
+                // currentState={currentState}
                 darkMode={darkMode}
                 removeComponent={removeComponent}
                 sideBarDebugger={sideBarDebugger}

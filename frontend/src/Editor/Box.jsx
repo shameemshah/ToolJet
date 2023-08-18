@@ -67,6 +67,8 @@ import _ from 'lodash';
 import { EditorContext } from '@/Editor/Context/EditorContextWrapper';
 import { useTranslation } from 'react-i18next';
 import { useCurrentState } from '@/_stores/currentStateStore';
+import { useResolvedStore } from '@/_stores/resolvedStore';
+import { shallow } from 'zustand/shallow';
 
 const AllComponents = {
   Button,
@@ -123,8 +125,68 @@ const AllComponents = {
   BoundedBox,
 };
 
-export const Box = memo(
-  ({
+export const Box = memo((props) => {
+  const { yellow, preview, component, inCanvas } = props;
+  const { t } = useTranslation();
+  const backgroundColor = yellow ? 'yellow' : '';
+
+  let styles = {
+    height: '100%',
+    padding: '1px',
+  };
+  return (
+    <>
+      {inCanvas ? (
+        <CanvasComponent {...props} />
+      ) : (
+        <OverlayTrigger
+          placement={inCanvas ? 'auto' : 'top'}
+          delay={{ show: 500, hide: 0 }}
+          overlay={(props) =>
+            renderTooltip({
+              props,
+              text: `${t(`widget.${component.name}.description`, component.description)}`,
+            })
+          }
+        >
+          <div
+            style={{
+              ...styles,
+              backgroundColor,
+            }}
+            role={preview ? 'BoxPreview' : 'Box'}
+          >
+            <div className="m-1" style={{ height: '76px', width: '76px', marginLeft: '18px' }}>
+              <div
+                className="component-image-holder p-2 d-flex flex-column justify-content-center"
+                style={{ height: '100%' }}
+                data-cy={`widget-list-box-${component.displayName.toLowerCase().replace(/\s+/g, '-')}`}
+              >
+                <center>
+                  <div
+                    style={{
+                      width: '20px',
+                      height: '20px',
+                      backgroundSize: 'contain',
+                      backgroundImage: `url(assets/images/icons/widgets/${component.name.toLowerCase()}.svg)`,
+                      backgroundRepeat: 'no-repeat',
+                    }}
+                  ></div>
+                </center>
+                <span className="component-title">
+                  {t(`widget.${component.name}.displayName`, component.displayName)}
+                </span>
+              </div>
+            </div>
+          </div>
+        </OverlayTrigger>
+      )}
+    </>
+  );
+});
+
+const CanvasComponent = (props) => {
+  const {
     id,
     width,
     height,
@@ -148,234 +210,214 @@ export const Box = memo(
     sideBarDebugger,
     readOnly,
     childComponents,
-  }) => {
-    const { t } = useTranslation();
-    const backgroundColor = yellow ? 'yellow' : '';
-    const currentState = useCurrentState();
+  } = props;
+  const { t } = useTranslation();
+  const backgroundColor = yellow ? 'yellow' : '';
+  // const currentState = useCurrentState();
 
-    let styles = {
-      height: '100%',
-      padding: '1px',
+  let styles = {
+    height: '100%',
+    padding: '1px',
+  };
+
+  if (inCanvas) {
+    styles = {
+      ...styles,
     };
-
-    if (inCanvas) {
-      styles = {
-        ...styles,
-      };
-    }
-
-    const componentMeta = useMemo(() => {
-      return componentTypes.find((comp) => component.component === comp.component);
-    }, [component]);
-
-    const ComponentToRender = AllComponents[component.component];
-    const [renderCount, setRenderCount] = useState(0);
-    const [renderStartTime, setRenderStartTime] = useState(new Date());
-    const [resetComponent, setResetStatus] = useState(false);
-
-    const resolvedProperties = resolveProperties(component, currentState, null, customResolvables);
-    const [validatedProperties, propertyErrors] =
-      mode === 'edit' && component.validate
-        ? validateProperties(resolvedProperties, componentMeta.properties)
-        : [resolvedProperties, []];
-
-    const resolvedStyles = resolveStyles(component, currentState, null, customResolvables);
-    const [validatedStyles, styleErrors] =
-      mode === 'edit' && component.validate
-        ? validateProperties(resolvedStyles, componentMeta.styles)
-        : [resolvedStyles, []];
-    validatedStyles.visibility = validatedStyles.visibility !== false ? true : false;
-
-    const resolvedGeneralProperties = resolveGeneralProperties(component, currentState, null, customResolvables);
-    const [validatedGeneralProperties, generalPropertiesErrors] =
-      mode === 'edit' && component.validate
-        ? validateProperties(resolvedGeneralProperties, componentMeta.general)
-        : [resolvedGeneralProperties, []];
-
-    const resolvedGeneralStyles = resolveGeneralStyles(component, currentState, null, customResolvables);
-    resolvedStyles.visibility = resolvedStyles.visibility !== false ? true : false;
-    const [validatedGeneralStyles, generalStylesErrors] =
-      mode === 'edit' && component.validate
-        ? validateProperties(resolvedGeneralStyles, componentMeta.generalStyles)
-        : [resolvedGeneralStyles, []];
-
-    const { variablesExposedForPreview, exposeToCodeHinter } = useContext(EditorContext) || {};
-
-    const componentActions = useRef(new Set());
-
-    useEffect(() => {
-      const currentPage = currentState?.page;
-
-      const componentName = getComponentName(currentState, id);
-      const errorLog = Object.fromEntries(
-        [...propertyErrors, ...styleErrors, ...generalPropertiesErrors, ...generalStylesErrors].map((error) => [
-          `${componentName} - ${error.property}`,
-          {
-            page: currentPage,
-            type: 'component',
-            kind: 'component',
-            strace: 'page_level',
-            data: { message: `${error.message}`, status: true },
-            resolvedProperties: resolvedProperties,
-            effectiveProperties: validatedProperties,
-          },
-        ])
-      );
-      sideBarDebugger?.error(errorLog);
-      // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [JSON.stringify({ propertyErrors, styleErrors, generalPropertiesErrors })]);
-
-    useEffect(() => {
-      setRenderCount(renderCount + 1);
-      if (renderCount > 10) {
-        setRenderCount(0);
-        const currentTime = new Date();
-        const timeDifference = Math.abs(currentTime - renderStartTime);
-        if (timeDifference < 1000) {
-          throw Error;
-        }
-        setRenderStartTime(currentTime);
-      }
-
-      // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [JSON.stringify({ resolvedProperties, resolvedStyles })]);
-
-    useEffect(() => {
-      if (customResolvables && !readOnly && mode === 'edit') {
-        const newCustomResolvable = {};
-        newCustomResolvable[id] = { ...customResolvables };
-        exposeToCodeHinter((prevState) => ({ ...prevState, ...newCustomResolvable }));
-      }
-      // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [JSON.stringify(customResolvables), readOnly]);
-
-    useEffect(() => {
-      if (resetComponent) setResetStatus(false);
-    }, [resetComponent]);
-
-    let exposedVariables = currentState?.components[component.name] ?? {};
-
-    const fireEvent = (eventName, options) => {
-      if (mode === 'edit' && eventName === 'onClick') {
-        onComponentClick(id, component);
-      }
-      onEvent(eventName, { ...options, customVariables: { ...customResolvables }, component });
-    };
-    const validate = (value) =>
-      validateWidget({
-        ...{ widgetValue: value },
-        ...{ validationObject: component.definition.validation, currentState },
-        customResolveObjects: customResolvables,
-      });
-
-    return (
-      <OverlayTrigger
-        placement={inCanvas ? 'auto' : 'top'}
-        delay={{ show: 500, hide: 0 }}
-        trigger={inCanvas && !validatedGeneralProperties.tooltip?.toString().trim() ? null : ['hover', 'focus']}
-        overlay={(props) =>
-          renderTooltip({
-            props,
-            text: inCanvas
-              ? `${validatedGeneralProperties.tooltip}`
-              : `${t(`widget.${component.name}.description`, component.description)}`,
-          })
-        }
-      >
-        <div
-          style={{
-            ...styles,
-            backgroundColor,
-          }}
-          role={preview ? 'BoxPreview' : 'Box'}
-        >
-          {inCanvas ? (
-            !resetComponent ? (
-              <ComponentToRender
-                onComponentClick={onComponentClick}
-                onComponentOptionChanged={onComponentOptionChanged}
-                currentState={currentState}
-                onEvent={onEvent}
-                id={id}
-                paramUpdated={paramUpdated}
-                width={width}
-                changeCanDrag={changeCanDrag}
-                onComponentOptionsChanged={onComponentOptionsChanged}
-                height={height}
-                component={component}
-                containerProps={containerProps}
-                darkMode={darkMode}
-                removeComponent={removeComponent}
-                canvasWidth={canvasWidth}
-                properties={validatedProperties}
-                exposedVariables={exposedVariables}
-                styles={{ ...validatedStyles, boxShadow: validatedGeneralStyles?.boxShadow }}
-                setExposedVariable={(variable, value) => onComponentOptionChanged(component, variable, value, id)}
-                setExposedVariables={(variableSet) => onComponentOptionsChanged(component, Object.entries(variableSet))}
-                registerAction={(actionName, func, dependencies = []) => {
-                  if (
-                    Object.keys(currentState?.components ?? {}).includes(component.name) &&
-                    currentState?.components[component.name].id === id
-                  ) {
-                    if (!Object.keys(exposedVariables).includes(actionName)) {
-                      func.dependencies = dependencies;
-                      componentActions.current.add(actionName);
-                      return onComponentOptionChanged(component, actionName, func);
-                    } else if (exposedVariables[actionName]?.dependencies?.length === 0) {
-                      return Promise.resolve();
-                    } else if (
-                      JSON.stringify(dependencies) !== JSON.stringify(exposedVariables[actionName]?.dependencies) ||
-                      !componentActions.current.has(actionName)
-                    ) {
-                      func.dependencies = dependencies;
-                      componentActions.current.add(actionName);
-                      return onComponentOptionChanged(component, actionName, func);
-                    }
-                  }
-                }}
-                fireEvent={fireEvent}
-                validate={validate}
-                parentId={parentId}
-                customResolvables={customResolvables}
-                variablesExposedForPreview={variablesExposedForPreview}
-                exposeToCodeHinter={exposeToCodeHinter}
-                setProperty={(property, value) => {
-                  paramUpdated(id, property, { value });
-                }}
-                mode={mode}
-                resetComponent={() => setResetStatus(true)}
-                childComponents={childComponents}
-                dataCy={`draggable-widget-${String(component.name).toLowerCase()}`}
-              ></ComponentToRender>
-            ) : (
-              <></>
-            )
-          ) : (
-            <div className="m-1" style={{ height: '76px', width: '76px', marginLeft: '18px' }}>
-              <div
-                className="component-image-holder p-2 d-flex flex-column justify-content-center"
-                style={{ height: '100%' }}
-                data-cy={`widget-list-box-${component.displayName.toLowerCase().replace(/\s+/g, '-')}`}
-              >
-                <center>
-                  <div
-                    style={{
-                      width: '20px',
-                      height: '20px',
-                      backgroundSize: 'contain',
-                      backgroundImage: `url(assets/images/icons/widgets/${component.name.toLowerCase()}.svg)`,
-                      backgroundRepeat: 'no-repeat',
-                    }}
-                  ></div>
-                </center>
-                <span className="component-title">
-                  {t(`widget.${component.name}.displayName`, component.displayName)}
-                </span>
-              </div>
-            </div>
-          )}
-        </div>
-      </OverlayTrigger>
-    );
   }
-);
+
+  const componentMeta = useMemo(() => {
+    return componentTypes.find((comp) => component.component === comp.component);
+  }, [component]);
+
+  const ComponentToRender = AllComponents[component.component];
+  const [renderCount, setRenderCount] = useState(0);
+  const [renderStartTime, setRenderStartTime] = useState(new Date());
+  const [resetComponent, setResetStatus] = useState(false);
+
+  // const [validatedProperties, setValidatedProperties] = useState({});
+  // const [validatedGeneralProperties, setValidatedGeneralProperties] = useState({});
+  // const [validatedStyles, setValidatedStyles] = useState({});
+
+  const { validatedProperties, validatedGeneralProperties, validatedStyles } = useResolvedStore(
+    (state) => ({
+      validatedProperties: state[id]?.properties,
+      validatedGeneralProperties: state[id]?.generalProperties,
+      validatedStyles: state[id]?.styles,
+    }),
+    shallow
+  );
+
+  // const resolvedProperties = resolveProperties(component, currentState, null, customResolvables);
+  // const [validatedProperties, propertyErrors] =
+  //   mode === 'edit' && component.validate
+  //     ? validateProperties(resolvedProperties, componentMeta.properties)
+  //     : [resolvedProperties, []];
+
+  // const resolvedStyles = resolveStyles(component, currentState, null, customResolvables);
+  // const [validatedStyles, styleErrors] =
+  //   mode === 'edit' && component.validate
+  //     ? validateProperties(resolvedStyles, componentMeta.styles)
+  //     : [resolvedStyles, []];
+  // validatedStyles.visibility = validatedStyles.visibility !== false ? true : false;
+
+  // const resolvedGeneralProperties = resolveGeneralProperties(component, currentState, null, customResolvables);
+  // const [validatedGeneralProperties, generalPropertiesErrors] =
+  //   mode === 'edit' && component.validate
+  //     ? validateProperties(resolvedGeneralProperties, componentMeta.general)
+  //     : [resolvedGeneralProperties, []];
+
+  // const resolvedGeneralStyles = resolveGeneralStyles(component, currentState, null, customResolvables);
+  // resolvedStyles.visibility = resolvedStyles.visibility !== false ? true : false;
+  // const [validatedGeneralStyles, generalStylesErrors] =
+  //   mode === 'edit' && component.validate
+  //     ? validateProperties(resolvedGeneralStyles, componentMeta.generalStyles)
+  //     : [resolvedGeneralStyles, []];
+
+  const { variablesExposedForPreview, exposeToCodeHinter } = useContext(EditorContext) || {};
+
+  const componentActions = useRef(new Set());
+
+  // useEffect(() => {
+  // const currentPage = currentState?.page;
+  // const componentName = getComponentName(currentState, id);
+  // const errorLog = Object.fromEntries(
+  //   [...propertyErrors, ...styleErrors, ...generalPropertiesErrors, ...generalStylesErrors].map((error) => [
+  //     `${componentName} - ${error.property}`,
+  //     {
+  //       page: currentPage,
+  //       type: 'component',
+  //       kind: 'component',
+  //       strace: 'page_level',
+  //       data: { message: `${error.message}`, status: true },
+  //       resolvedProperties: resolvedProperties,
+  //       effectiveProperties: validatedProperties,
+  //     },
+  //   ])
+  // );
+  // sideBarDebugger?.error(errorLog);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  // }, [JSON.stringify({ propertyErrors, styleErrors, generalPropertiesErrors })]);
+
+  // useEffect(() => {
+  //   setRenderCount(renderCount + 1);
+  //   if (renderCount > 10) {
+  //     setRenderCount(0);
+  //     const currentTime = new Date();
+  //     const timeDifference = Math.abs(currentTime - renderStartTime);
+  //     if (timeDifference < 1000) {
+  //       throw Error;
+  //     }
+  //     setRenderStartTime(currentTime);
+  //   }
+
+  //   // eslint-disable-next-line react-hooks/exhaustive-deps
+  // }, [JSON.stringify({ resolvedProperties, resolvedStyles })]);
+
+  useEffect(() => {
+    if (customResolvables && !readOnly && mode === 'edit') {
+      const newCustomResolvable = {};
+      newCustomResolvable[id] = { ...customResolvables };
+      exposeToCodeHinter((prevState) => ({ ...prevState, ...newCustomResolvable }));
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [JSON.stringify(customResolvables), readOnly]);
+
+  useEffect(() => {
+    if (resetComponent) setResetStatus(false);
+  }, [resetComponent]);
+
+  // let exposedVariables = currentState?.components[component.name] ?? {};
+
+  const fireEvent = (eventName, options) => {
+    if (mode === 'edit' && eventName === 'onClick') {
+      onComponentClick(id, component);
+    }
+    onEvent(eventName, { ...options, customVariables: { ...customResolvables }, component });
+  };
+  const validate = (value) => ({ isValid: true, validationError: null });
+  // validateWidget({
+  //   ...{ widgetValue: value },
+  //   ...{ validationObject: component.definition.validation, currentState },
+  //   customResolveObjects: customResolvables,
+  // });
+
+  return (
+    <OverlayTrigger
+      placement={inCanvas ? 'auto' : 'top'}
+      delay={{ show: 500, hide: 0 }}
+      trigger={inCanvas && !validatedGeneralProperties.tooltip?.toString().trim() ? null : ['hover', 'focus']}
+      overlay={(props) =>
+        renderTooltip({
+          props,
+          text: inCanvas
+            ? `${validatedGeneralProperties.tooltip}`
+            : `${t(`widget.${component.name}.description`, component.description)}`,
+        })
+      }
+    >
+      {!resetComponent ? (
+        <ComponentToRender
+          onComponentClick={onComponentClick}
+          onComponentOptionChanged={onComponentOptionChanged}
+          // currentState={currentState}
+          onEvent={onEvent}
+          id={id}
+          paramUpdated={paramUpdated}
+          width={width}
+          changeCanDrag={changeCanDrag}
+          onComponentOptionsChanged={onComponentOptionsChanged}
+          height={height}
+          component={component}
+          containerProps={containerProps}
+          darkMode={darkMode}
+          removeComponent={removeComponent}
+          canvasWidth={canvasWidth}
+          properties={validatedProperties}
+          // exposedVariables={exposedVariables}
+          exposedVariables={{}}
+          styles={validatedStyles}
+          // styles={{ ...validatedStyles, boxShadow: validatedGeneralStyles?.boxShadow }}
+          setExposedVariable={(variable, value) => onComponentOptionChanged(component, variable, value, id)}
+          setExposedVariables={(variableSet) => onComponentOptionsChanged(component, Object.entries(variableSet))}
+          registerAction={(actionName, func, dependencies = []) => {
+            // if (
+            //   Object.keys(currentState?.components ?? {}).includes(component.name) &&
+            //   currentState?.components[component.name].id === id
+            // ) {
+            //   if (!Object.keys(exposedVariables).includes(actionName)) {
+            //     func.dependencies = dependencies;
+            //     componentActions.current.add(actionName);
+            //     return onComponentOptionChanged(component, actionName, func);
+            //   } else if (exposedVariables[actionName]?.dependencies?.length === 0) {
+            //     return Promise.resolve();
+            //   } else if (
+            //     JSON.stringify(dependencies) !== JSON.stringify(exposedVariables[actionName]?.dependencies) ||
+            //     !componentActions.current.has(actionName)
+            //   ) {
+            //     func.dependencies = dependencies;
+            //     componentActions.current.add(actionName);
+            //     return onComponentOptionChanged(component, actionName, func);
+            //   }
+            // }
+          }}
+          fireEvent={fireEvent}
+          validate={validate}
+          parentId={parentId}
+          customResolvables={customResolvables}
+          variablesExposedForPreview={variablesExposedForPreview}
+          exposeToCodeHinter={exposeToCodeHinter}
+          setProperty={(property, value) => {
+            paramUpdated(id, property, { value });
+          }}
+          mode={mode}
+          resetComponent={() => setResetStatus(true)}
+          childComponents={childComponents}
+          dataCy={`draggable-widget-${String(component.name).toLowerCase()}`}
+        ></ComponentToRender>
+      ) : (
+        <></>
+      )}
+    </OverlayTrigger>
+  );
+};

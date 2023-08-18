@@ -48,7 +48,7 @@ import { useDataQueriesStore } from '@/_stores/dataQueriesStore';
 import { useAppVersionStore } from '@/_stores/appVersionStore';
 import { useEditorStore } from '@/_stores/editorStore';
 import { useQueryPanelStore } from '@/_stores/queryPanelStore';
-import { useCurrentStateStore, useCurrentState } from '@/_stores/currentStateStore';
+import { useCurrentStateStore } from '@/_stores/currentStateStore';
 import { resetAllStores } from '@/_stores/utils';
 import { setCookie } from '@/_helpers/cookie';
 import { shallow } from 'zustand/shallow';
@@ -147,7 +147,7 @@ class EditorComponent extends React.Component {
         this.setState({ currentUser });
         useCurrentStateStore.getState().actions.setCurrentState({
           globals: {
-            ...this.props.currentState.globals,
+            ...useCurrentStateStore.getState().globals,
             currentUser: userVars,
           },
         });
@@ -191,12 +191,12 @@ class EditorComponent extends React.Component {
       },
     });
     const globals = {
-      ...this.props.currentState.globals,
+      ...useCurrentStateStore.getState().globals,
       theme: { name: this.props.darkMode ? 'dark' : 'light' },
       urlparams: JSON.parse(JSON.stringify(queryString.parse(this.props.location.search))),
     };
     const page = {
-      ...this.props.currentState.page,
+      ...useCurrentStateStore.getState().page,
       handle: this.props.pageHandle,
       variables: {},
     };
@@ -895,8 +895,8 @@ class EditorComponent extends React.Component {
     }
   };
 
-  handleOnComponentOptionChanged = (component, optionName, value) => {
-    return onComponentOptionChanged(this, component, optionName, value);
+  handleOnComponentOptionChanged = (component, optionName, value, id) => {
+    return onComponentOptionChanged(this, component, optionName, value, id);
   };
 
   handleOnComponentOptionsChanged = (component, options) => {
@@ -920,7 +920,7 @@ class EditorComponent extends React.Component {
   changeDarkMode = (newMode) => {
     useCurrentStateStore.getState().actions.setCurrentState({
       globals: {
-        ...this.props.currentState.globals,
+        ...useCurrentStateStore.getState().globals,
         theme: { name: newMode ? 'dark' : 'light' },
       },
     });
@@ -1331,7 +1331,7 @@ class EditorComponent extends React.Component {
     document.getElementById('real-canvas').scrollIntoView();
     if (
       this.state.currentPageId === pageId &&
-      this.props.currentState.page.handle === this.state.appDefinition?.pages[pageId]?.handle
+      useCurrentStateStore.getState().page.handle === this.state.appDefinition?.pages[pageId]?.handle
     ) {
       return;
     }
@@ -1344,7 +1344,7 @@ class EditorComponent extends React.Component {
 
     this.props.navigate(`/${getWorkspaceId()}/apps/${this.state.appId}/${handle}?${queryParamsString}`);
 
-    const { globals: existingGlobals } = this.props.currentState;
+    const { globals: existingGlobals } = useCurrentStateStore.getState();
 
     const page = {
       id: pageId,
@@ -1365,7 +1365,7 @@ class EditorComponent extends React.Component {
           [currentPageId]: {
             ...(this.state.pages?.[currentPageId] ?? {}),
             variables: {
-              ...(this.props.currentState?.page?.variables ?? {}),
+              ...(useCurrentStateStore.getState()?.page?.variables ?? {}),
             },
           },
         },
@@ -1452,11 +1452,8 @@ class EditorComponent extends React.Component {
       queryConfirmationList,
     } = this.state;
     const selectedComponents = this?.props?.selectedComponents;
-    const currentState = this.props?.currentState;
     const editingVersion = this.props?.editingVersion;
-    const appVersionPreviewLink = editingVersion
-      ? `/applications/${app.id}/versions/${editingVersion.id}/${currentState.page.handle}`
-      : '';
+
     return (
       <div className="editor wrapper">
         <Confirm
@@ -1486,7 +1483,6 @@ class EditorComponent extends React.Component {
             toggleAppMaintenance={this.toggleAppMaintenance}
             editingVersion={editingVersion}
             app={app}
-            appVersionPreviewLink={appVersionPreviewLink}
             slug={slug}
             appId={appId}
             canUndo={this.canUndo}
@@ -1506,8 +1502,6 @@ class EditorComponent extends React.Component {
           <DndProvider backend={HTML5Backend}>
             <div className="sub-section">
               <LeftSidebar
-                errorLogs={currentState.errors}
-                components={currentState.components}
                 appId={appId}
                 darkMode={this.props.darkMode}
                 dataSourcesChanged={this.dataSourcesChanged}
@@ -1759,7 +1753,7 @@ const withStore = (Component) => (props) => {
     (state) => ({ isVersionReleased: state.isVersionReleased, editingVersion: state.editingVersion }),
     shallow
   );
-  const currentState = useCurrentState();
+  // const currentState = useCurrentState();
 
   return (
     <Component
@@ -1772,7 +1766,7 @@ const withStore = (Component) => (props) => {
       setSelectionInProgress={setSelectionInProgress}
       selectedComponents={selectedComponents}
       setSelectedComponents={setSelectedComponents}
-      currentState={currentState}
+      // currentState={currentState}
     />
   );
 };

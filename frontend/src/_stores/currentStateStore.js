@@ -56,3 +56,6 @@ export const useCurrentState = () =>
 export const getCurrentState = () => {
   return omit(useCurrentStateStore.getState(), 'actions');
 };
+
+// eslint-disable-next-line react-hooks/rules-of-hooks
+export const getPageState = () => useCurrentStateStore((state) => state.page?.handle);

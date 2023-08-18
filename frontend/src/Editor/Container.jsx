@@ -53,7 +53,7 @@ export const Container = ({
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const components = appDefinition.pages[currentPageId]?.components ?? {};
-  const currentState = useCurrentState();
+  // const currentState = useCurrentState();
   const { appVersionsId, enableReleasedVersionPopupState, isVersionReleased } = useAppVersionStore(
     (state) => ({
       appVersionsId: state?.editingVersion?.id,
@@ -531,7 +531,7 @@ export const Container = ({
       onEvent,
       appDefinition,
       appDefinitionChanged,
-      currentState,
+      // currentState,
       onComponentOptionChanged,
       onComponentOptionsChanged,
       appLoading,
@@ -553,7 +553,7 @@ export const Container = ({
     onEvent,
     appDefinition,
     appDefinitionChanged,
-    currentState,
+    // currentState,
     onComponentOptionChanged,
     onComponentOptionsChanged,
     appLoading,
@@ -614,7 +614,8 @@ export const Container = ({
         const canShowInCurrentLayout =
           box.component.definition.others[currentLayout === 'mobile' ? 'showOnMobile' : 'showOnDesktop'].value;
         const addDefaultChildren = box.withDefaultChildren;
-        if (!box.parent && resolveReferences(canShowInCurrentLayout, currentState)) {
+        // if (!box.parent && resolveReferences(canShowInCurrentLayout, currentState)) {
+        if (!box.parent && true) {
           return (
             <DraggableBox
               className={showComments && 'pointer-events-none'}

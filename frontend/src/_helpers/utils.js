@@ -9,6 +9,11 @@ import { authenticationService } from '@/_services/authentication.service';
 
 import { useDataQueriesStore } from '@/_stores/dataQueriesStore';
 import { getCurrentState } from '@/_stores/currentStateStore';
+import * as parser from '@babel/parser';
+// let acorn = require('acorn');
+
+var resolveCodeCalls = 0;
+var resolveReferencesCalls = 0;
 
 export function findProp(obj, prop, defval) {
   if (typeof defval === 'undefined') defval = null;
@@ -46,8 +51,47 @@ export function resolve(data, state) {
 }
 
 function resolveCode(code, state, customObjects = {}, withError = false, reservedKeyword, isJsCode) {
+  // const matches = code.match(/components|queries|globals|variables|page|client|server|moment|_|/g);
+  // console.log('matches--- ', matches);
+
+  // if (
+  //   code.indexOf('components') === -1 &&
+  //   code.indexOf('queries') === -1 &&
+  //   code.indexOf('globals') === -1 &&
+  //   code.indexOf('variables') === -1 &&
+  //   code.indexOf('page') === -1 &&
+  //   code.indexOf('client') === -1 &&
+  //   code.indexOf('server') === -1 &&
+  //   code.indexOf('moment') === -1
+  // ) {
+  //   const evalFunction = Function(`return ${code}`);
+  //   const result = evalFunction();
+  //   return withError ? [result, ''] : result;
+  // }
+  // if (
+  //   !(
+  //     code.startsWith('components') ||
+  //     code.startsWith('queries') ||
+  //     code.startsWith('globals') ||
+  //     code.startsWith('variables') ||
+  //     code.startsWith('page') ||
+  //     code.startsWith('client') ||
+  //     code.startsWith('server') ||
+  //     code.startsWith('moment') ||
+  //     code.startsWith('_')
+  //   )
+  // ) {
+  //   const evalFunction = Function(`return ${code}`);
+  //   const result = evalFunction();
+  //   return withError ? [result, ''] : result;
+  // }
   let result = '';
   let error;
+  try {
+    // console.log('here--- ', parser.parse(code));
+  } catch (err) {
+    console.log('here--- ', err);
+  }
 
   // dont resolve if code starts with "queries." and ends with "run()"
   if (code.startsWith('queries.') && code.endsWith('run()')) {
@@ -89,6 +133,7 @@ function resolveCode(code, state, customObjects = {}, withError = false, reserve
     }
   }
 
+  // console.log('calls--- resolveCode--- ', ++resolveCodeCalls);
   if (withError) return [result, error];
   return result;
 }
@@ -149,10 +194,13 @@ export function resolveReferences(
   forPreviewBox = false
 ) {
   if (object === '{{{}}}') return '';
+  if (object === '{{true}}') return withError ? [true, ''] : true;
+  if (object === '{{false}}') return withError ? [false, ''] : false;
   const reservedKeyword = ['app']; //Keywords that slows down the app
   object = _.clone(object);
   const objectType = typeof object;
   let error;
+  // console.log('calls--- resolveReferences--- ', ++resolveReferencesCalls);
   switch (objectType) {
     case 'string': {
       if (object.includes('{{') && object.includes('}}') && object.includes('%%') && object.includes('%%')) {

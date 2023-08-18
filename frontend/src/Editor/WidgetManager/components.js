@@ -42,3 +42,52 @@ export const componentTypes = widgets.map((widget) => {
     definition: combineProperties(widget.definition, universalProps.definition, true),
   };
 });
+
+export const defaultResolvedValues = {
+  Button: {
+    others: {
+      showOnDesktop: true,
+      showOnMobile: false,
+    },
+    properties: {
+      text: `Button`,
+      loadingState: false,
+    },
+    events: [],
+    styles: {
+      backgroundColor: '#375FCF',
+      textColor: '#fff',
+      loaderColor: '#fff',
+      visibility: true,
+      borderRadius: 0,
+      borderColor: '#375FCF',
+      disabledState: false,
+    },
+  },
+  TextInput: {
+    validation: {
+      regex: '',
+      minLength: null,
+      maxLength: null,
+      customRule: null,
+    },
+    others: {
+      showOnDesktop: true,
+      showOnMobile: false,
+    },
+    properties: {
+      value: '',
+      placeholder: 'Enter your input',
+    },
+    events: [],
+    styles: {
+      textColor: '#000',
+      borderColor: '#dadcde',
+      errTextColor: '#ff0000',
+      borderRadius: '0',
+      visibility: true,
+      disabledState: false,
+      backgroundColor: '#fff',
+    },
+  },
+};
