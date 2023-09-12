@@ -5,6 +5,17 @@
   background: var(--base) !important;
   display: flex;
   gap: 16px;
+  height: 100%;
+  width: 48px;
+  position: fixed;
+  z-index: 2;
+  left: 0;
+  overflow-x: hidden;
+  flex: 1 1 auto;
+  background-clip: border-box;
+  padding-top: 8px;
+  scrollbar-width: none;
+
 
   .sidebar-svg-icon {
     height: 32px;
@@ -726,4 +737,132 @@
   height: 100%;
   min-height: 300px;
   position: relative;
+}
+
+.left-sidebar-inspector {
+  .card-body {
+    padding: 1rem 0rem 1rem 1rem;
+  }
+}
+
+.left-sidebar-page-selector {
+  .add-new-page-button-container {
+    width: 100%;
+    margin-top: 10px;
+  }
+}
+
+.left-sidebar {
+
+
+  .accordion-item {
+    border: solid var(--slate5);
+    border-width: 1px 0px 1px 0px;
+  }
+
+  .datasources-container {
+    height: 50%;
+    overflow-y: scroll;
+
+    tr {
+      border-color: #f1f1f1;
+    }
+  }
+
+  .variables-container {
+    height: 50%;
+    overflow-y: scroll;
+  }
+
+  .variables-container::-webkit-scrollbar-thumb,
+  .datasources-container::-webkit-scrollbar-thumb {
+    background: transparent;
+    height: 0;
+    width: 0;
+  }
+
+  .variables-container::-webkit-scrollbar,
+  .datasources-container::-webkit-scrollbar {
+    width: 0;
+    background: transparent;
+    height: 0;
+  }
+
+  .variables-container,
+  .datasources-container {
+    scrollbar-width: none;
+  }
+
+  .datasources-container {
+    bottom: 0;
+    height: 500px;
+    border: solid rgba(101, 109, 119, 0.16);
+    border-width: 1px 0px 1px 0px;
+
+    .datasources-header {
+      border: solid rgba(0, 0, 0, 0.125);
+      border-width: 0px 0px 1px 0px;
+    }
+  }
+
+
+}
+
+.left-sidebar::-webkit-scrollbar {
+  width: 0;
+  background: transparent;
+}
+
+.left-sidebar-layout {
+  display: flex;
+  justify-content: center;
+  font-size: 11px;
+  align-items: center;
+  letter-spacing: 0.2px;
+
+  p {
+    margin-bottom: 0px;
+    margin-top: 8px;
+  }
+}
+
+.left-sidebar-header-btn {
+  background-color: var(--base) !important;
+  width: 28px;
+  height: 28px;
+  padding: 7px !important;
+
+  &:focus-visible {
+    border: none !important;
+    outline: none !important;
+    box-shadow: none !important;
+  }
+}
+.left-sidebar-comments {
+  position: absolute;
+  left: 0;
+  bottom: 48px;
+}
+
+.left-sidebar {
+  .text-muted {
+    color: #ffffff !important;
+  }
+
+  .left-sidebar-page-selector {
+    .list-group {
+      .list-group-item {
+        border: solid #1d2a39 1px;
+        color: white;
+      }
+
+      .list-group-item:hover {
+        background-color: #1F2936;
+      }
+
+      .list-group-item.active {
+        background-color: #1F2936;
+      }
+    }
+  }
 }
