@@ -5,7 +5,7 @@ import AlignLeft from '@/_ui/Icon/solidIcons/AlignLeft';
 import AlignCenter from '@/_ui/Icon/solidIcons/AlignCenter';
 import AlignRight from '@/_ui/Icon/solidIcons/AlignRight';
 
-export const AlignButtons = ({ value, onChange, forceCodeBox, meta }) => {
+export const AlignButtons = ({ value, onChange }) => {
   function handleOptionChanged(_value) {
     onChange(_value);
   }
