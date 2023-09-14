@@ -219,10 +219,9 @@ describe("Table", () => {
     cy.forceClickOnCanvas();
 
     openEditorSidebar(data.widgetName);
-    cy.log(".......");
     cy.get('[data-cy="table-data-input-field"]').clearAndTypeOnCodeMirror(
       codeMirrorInputLabel(`[{id:1,name:"Mike",email:"mike@example.com" },{id:2,name:"Nina",email:"nina@example.com" },{id:3,name:"Steph",email:"steph@example.com" },{id:4,name:"Oliver",email:"oliver@example.com" },
-      ]`)
+        ]`)
     );
     // cy.get('[data-cy="inspector-close-icon"]').click();
     cy.forceClickOnCanvas();
@@ -452,7 +451,7 @@ describe("Table", () => {
     openEditorSidebar(data.widgetName);
     cy.get('[data-cy="table-data-input-field"]').clearAndTypeOnCodeMirror(
       codeMirrorInputLabel(`[{id:1,name:"Mike",email:"mike@example.com", tags:['One','Two','Three'] },{id:2,name:"Nina",email:"nina@example.com" },{id:3,name:"Steph",email:"steph@example.com", tags:['One','Two','Three'] },{id:4,name:"Oliver",email:"oliver@example.com" },
-      ]`)
+        ]`)
     );
 
     // closeAccordions(["Options"]);
@@ -553,7 +552,7 @@ describe("Table", () => {
     deleteAndVerifyColumn("fake-datepicker");
 
     verifyAndModifyToggleFx(
-      "Connect code",
+      tableText.labelDynamicColumn,
       commonWidgetText.codeMirrorLabelFalse
     );
     cy.get('[data-cy*="-cell-1"]').should("have.class", "has-text");
@@ -575,8 +574,10 @@ describe("Table", () => {
       )
     );
     cy.forceClickOnCanvas();
+    cy.waitForAutoSave();
     cy.get('[data-cy*="-cell-1"]')
       .eq(0)
+      .find("input")
       .click()
       .type(`{selectAll}{backspace}Mike Jon`);
     cy.forceClickOnCanvas();
@@ -676,7 +677,8 @@ describe("Table", () => {
     verifyAndModifyToggleFx(
       commonWidgetText.parameterBoxShadow,
       commonWidgetText.boxShadowDefaultValue,
-      false
+      false,
+      "0px 0px 0px 0px "
     );
 
     cy.get(commonWidgetSelector.boxShadowColorPicker).click();
@@ -715,7 +717,7 @@ describe("Table", () => {
     ).click();
     cy.get(commonWidgetSelector.buttonStylesEditorSideBar).click();
 
-    cy.get('[data-cy="table-type > svg').click();
+    cy.get('[data-cy="table-type-fx-button"]>svg').click();
     cy.get('[data-cy="dropdown-table-type"]').click();
     selectFromSidebarDropdown('[data-cy="dropdown-table-type"]', "Classic");
     cy.forceClickOnCanvas();
@@ -1094,8 +1096,9 @@ describe("Table", () => {
     verifyNodeData("components", "Object", "1 entry ");
     openNode("components");
     verifyNodeData(tableText.defaultWidgetName, "Object", "22 entries ");
-    openNode(tableText.defaultWidgetName);
-    cy.wait(500);
+    cy.wait(1000);
+    openNode(tableText.defaultWidgetName, 0, 1);
+    openNode(tableText.defaultWidgetName, 0, 1);
     verifyNodeData("newRows", "Array", "1 item ");
     openNode("newRows");
     verifyNodeData("0", "Object", "3 entries ");

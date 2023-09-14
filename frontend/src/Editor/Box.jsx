@@ -199,19 +199,19 @@ export const Box = memo(
         ? validateProperties(resolvedGeneralStyles, componentMeta.generalStyles)
         : [resolvedGeneralStyles, []];
 
-    const componentActions = useRef(new Set());
     const darkMode = localStorage.getItem('darkMode') === 'true';
     const { variablesExposedForPreview, exposeToCodeHinter } = useContext(EditorContext) || {};
 
     useEffect(() => {
-      onComponentOptionChanged && onComponentOptionChanged(component, 'id', id);
+      if (!component?.parent) {
+        onComponentOptionChanged && onComponentOptionChanged(component, 'id', id);
+      }
       // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []); /*computeComponentState was not getting the id on initial render therefore exposed variables were not set.
   computeComponentState was being executed before addNewWidgetToTheEditor was completed.*/
 
     useEffect(() => {
       const currentPage = currentState?.page;
-
       const componentName = getComponentName(currentState, id);
       const errorLog = Object.fromEntries(
         [...propertyErrors, ...styleErrors, ...generalPropertiesErrors, ...generalStylesErrors].map((error) => [
@@ -346,13 +346,17 @@ export const Box = memo(
                   <div
                     className="widget-svg-container"
                     style={{
-                      width: '24px',
-                      height: '24px',
+                      width: '32px',
+                      height: '32px',
                       backgroundSize: 'contain',
                       backgroundRepeat: 'no-repeat',
                     }}
                   >
-                    <WidgetIcon name={component.name.toLowerCase()} fill={darkMode ? '#3A3F42' : '#D7DBDF'} />
+                    <WidgetIcon
+                      name={component.name.toLowerCase()}
+                      width="32"
+                      fill={darkMode ? '#3A3F42' : '#D7DBDF'}
+                    />
                   </div>
                 </center>
               </div>

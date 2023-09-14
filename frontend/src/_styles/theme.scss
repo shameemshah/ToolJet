@@ -965,7 +965,7 @@ button {
       .launch-button {
         box-sizing: border-box;
         border-radius: 6px;
-        color: var(--base);
+        color: var(--slate12);
         width: 113px;
         height: 28px;
         background: var(--base);
@@ -2998,7 +2998,7 @@ input:focus-visible {
   }
 
   .editor .editor-sidebar .components-container .component-image-holder {
-    background: var(--slate3) !important;
+    background: hsl(200, 7.0%, 8.8%); //slate1
     border-radius: 6px;
     margin-bottom: 4px;
   }
@@ -3059,7 +3059,7 @@ input:focus-visible {
   }
 
   .app-title {
-    color: var(--base) !important;
+    color: var(--slate12) !important;
   }
 
   .RichEditor-root {
@@ -3109,7 +3109,6 @@ input:focus-visible {
   }
 
   .main .query-pane .data-pane .queries-container .queries-header {
-    border: solid #ffffff17 !important;
     border-width: 0px 0px 1px 0px !important;
 
     .text-muted {
@@ -4827,7 +4826,7 @@ div#driver-page-overlay {
   border-color: rgba(101, 109, 119, 0.16) !important;
 
   .driver-popover-title {
-    color: var(--base) !important;
+    color: var(--slate12) !important;
   }
 
   .driver-popover-tip {
@@ -4950,18 +4949,16 @@ div#driver-page-overlay {
   display: flex;
   flex-direction: row;
   width: 158px;
-  height: 32px;
 }
 
 .hinter-canvas-input {
   display: flex;
   width: 120px;
-  height: 32px;
+  height: auto !important;
   margin-top: 1px;
 
   .canvas-hinter-wrap {
     width: 126x;
-    height: 32px !important;
     border: 1px solid var(--slate7);
   }
 }
@@ -4969,7 +4966,6 @@ div#driver-page-overlay {
 .hinter-canvas-input {
   display: flex;
   padding: 4px;
-  height: 41.2px !important;
   margin-top: 1px;
 
   .CodeMirror-sizer {
@@ -4985,7 +4981,7 @@ div#driver-page-overlay {
   .code-hinter-col {
     margin-bottom: 1px !important;
     width: 136px;
-    height: 32px;
+    height: auto !important;
   }
 }
 
@@ -7071,7 +7067,7 @@ tbody {
 
 .workspace-content-wrapper,
 .database-page-content-wrap {
-  background: var(--slate2);
+  // background: var(--slate2);
 }
 
 .workspace-variable-table-card {
@@ -7613,12 +7609,13 @@ tbody {
   position: fixed;
   bottom: 0px;
   right: 0;
-  left: 344px;
+  left: 336px;
 }
 
 .home-page-footer {
   height: 52px;
   background-color: var(--base) !important;
+  border-top: 1px solid var(--slate5) !important;
 }
 
 .pagination-container {
@@ -7719,7 +7716,7 @@ tbody {
 .home-page-content {
   height: calc(100vh - 64px) !important;
   overflow-y: auto;
-  background: var(--slate2);
+  // background: var(--slate2);
 }
 
 .application-folders-list {
@@ -9389,7 +9386,6 @@ tbody {
 }
 
 .sso-footer-save-btn {
-  width: 157px;
   height: 40px;
 }
 
@@ -10779,7 +10775,7 @@ tbody {
 .marketplace-body {
   height: calc(100vh - 64px) !important;
   overflow-y: auto;
-  background: var(--slate2);
+  // background: var(--slate2);
 }
 
 .plugins-card {
@@ -10867,7 +10863,7 @@ tbody {
     }
 
     .search-box-wrapper input {
-      color: var(--base) !important;
+      color: var(--slate12) !important;
     }
   }
 }
@@ -11359,7 +11355,6 @@ tbody {
 .popover-body {
   background-color: var(--base);
   color: var(--slate12);
-  border: 1px solid var(--slate3, #F1F3F5);
   border-radius: 6px;
 }
 

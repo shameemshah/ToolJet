@@ -734,7 +734,7 @@
 }
 
 .left-sidebar-local-datasources-wrapper {
-  height: 100%;
+  height: calc(100% - 48px);
   min-height: 300px;
   position: relative;
 }
