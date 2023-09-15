@@ -95,7 +95,7 @@ const Preview = ({ darkMode }) => {
                 style={{
                   overflowWrap: 'anywhere',
                   padding: 0,
-                  border: '1px solid var(--slate5)',
+                  border: '1px solid var(--border-main)',
                   borderBottomLeftRadius: '6px',
                   borderBottomRightRadius: '6px',
                 }}

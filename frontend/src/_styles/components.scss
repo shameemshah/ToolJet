@@ -97,7 +97,7 @@ $btn-dark-color: #FFFFFF;
   background-color: var(--slate3);
   padding: 12px 16px;
   min-height: 52px;
-  border-bottom: 1px solid var(--slate5);
+  border-bottom: 1px solid var(--border-main);
 
 
   .panel-header-container {
@@ -252,13 +252,13 @@ $btn-dark-color: #FFFFFF;
 
 .page-handler-alert {
   background-color: var(--slate2) !important;
-  border: 1px solid var(--slate5) !important;
+  border: 1px solid var(--border-main) !important;
   border-radius: 6px;
 }
 
 .copilot-alert {
   background-color: var(--slate2) !important;
-  border: 1px solid var(--slate5) !important;
+  border: 1px solid var(--border-main) !important;
 }
 
 .page-handle-edit-container {

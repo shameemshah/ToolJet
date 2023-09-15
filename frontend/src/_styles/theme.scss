@@ -211,7 +211,7 @@ button {
   max-height: 48px;
   min-height: auto;
   background-color: var(--base) !important;
-  border-bottom: 1px solid var(--slate5);
+  border-bottom: 1px solid var(--border-main);
 
   .nav-item.active:after {
     bottom: 0 !important;
@@ -270,7 +270,7 @@ button {
   display: none;
 }
 .accordion-item{
-  border: solid var(--slate5);
+  border: solid var(--border-main);
   border-width: 0px 0px 1px 0px;
 }
 
@@ -444,7 +444,7 @@ button {
     width: 300px;
     flex: 1 1 auto;
     top: 48px;
-    border-left: 1px solid var(--slate5);
+    border-left: 1px solid var(--border-main);
     background-color: var(--base);
     background-clip: border-box;
     height: 100vh;
@@ -1013,7 +1013,7 @@ button {
 
   .modal-header {
     background-color: var(--base) !important;
-    border-bottom: 1px solid var(--slate5);
+    border-bottom: 1px solid var(--border-main);
 
   }
 
@@ -1157,7 +1157,7 @@ button {
   .template-list-column,
   .categories-column,
   .modal-header {
-    border-color: var(--slate5) !important;
+    border-color: var(--border-main) !important;
   }
 
   .modal-body,
@@ -1343,7 +1343,7 @@ button {
     position: relative;
     width: 0;
     height: 2rem;
-    border-left: 1px solid var(--slate5);
+    border-left: 1px solid var(--border-main);
     content: '';
     margin-right: -2.75rem;
 
@@ -1352,7 +1352,7 @@ button {
   .code-hinter-vertical-line {
     position: relative;
     width: 0;
-    border-left: 1px solid var(--slate5);
+    border-left: 1px solid var(--border-main);
     content: '';
     margin-right: 1rem;
   }
@@ -2782,7 +2782,7 @@ input:focus-visible {
   left: -192px;
   top: 0px;
   border-radius: 6px !important;
-  border: 1px solid var(--slate5, #E6E8EB) !important;
+  border: 1px solid var(--border-main, #E6E8EB) !important;
   background: var(--slate1, #FBFCFD) !important;
   width: 210px !important; //adjusted with padding
   box-shadow: 0px 4px 6px -2px rgba(16, 24, 40, 0.03), 0px 12px 16px -4px rgba(16, 24, 40, 0.08) !important;
@@ -3117,7 +3117,7 @@ input:focus-visible {
   }
 
   .query-pane {
-    border-top: 1px solid var(--slate5) !important;
+    border-top: 1px solid var(--border-main) !important;
   }
 
   .input-icon .input-icon-addon img {
@@ -3880,7 +3880,7 @@ input[type="text"] {
 
           .CodeMirror {
             height: 100% !important;
-            border: 1px solid var(--slate5, #26292B);
+            border: 1px solid var(--border-main, #26292B);
             border-bottom-left-radius: 6px;
             border-bottom-right-radius: 6px;
           }
@@ -3896,8 +3896,8 @@ input[type="text"] {
 
     .portal-header {
       width: 100% !important;
-      border-bottom: 1px solid var(--slate5, #26292B);
-      outline: 1px solid var(--slate5, #26292B);
+      border-bottom: 1px solid var(--border-main, #26292B);
+      outline: 1px solid var(--border-main, #26292B);
       background-color: var(--slate1) !important;
     }
 
@@ -4400,7 +4400,7 @@ input[type="text"] {
   box-shadow: 0px 12px 16px -4px rgba(16, 24, 40, 0.08), 0px 4px 6px -2px rgba(16, 24, 40, 0.03);
 
   .modal-header {
-    border-bottom: 1px solid var(--slate5) !important;
+    border-bottom: 1px solid var(--border-main) !important;
   }
 
   .modal-header,
@@ -4771,7 +4771,7 @@ input[type="text"] {
 // comment styles ::override
 .editor-sidebar {
   .nav-tabs {
-    border-bottom: 1px solid var(--slate5) !important;
+    border-bottom: 1px solid var(--border-main) !important;
   }
 
   .nav-tabs .nav-link.active {
@@ -4797,7 +4797,7 @@ input[type="text"] {
 }
 
 .comment-card-wrapper {
-  border-top: 0.5px solid var(--slate5) !important;
+  border-top: 0.5px solid var(--border-main) !important;
   margin-top: -1px !important;
 
   .card {
@@ -5141,7 +5141,7 @@ div#driver-page-overlay {
 }
 
 .card-header {
-  border-bottom: 1px solid var(--slate5) !important;
+  border-bottom: 1px solid var(--border-main) !important;
 }
 
 .manage-sso-container {
@@ -5157,7 +5157,7 @@ div#driver-page-overlay {
   grid-template-rows: auto 1fr auto;
 
   .card-header {
-    border-bottom: 1px solid var(--slate5) !important;
+    border-bottom: 1px solid var(--border-main) !important;
   }
 
   .form-control {
@@ -5173,7 +5173,7 @@ div#driver-page-overlay {
     gap: 8px;
     width: 660px;
     height: 88px;
-    border-top: 1px solid var(--slate5) !important;
+    border-top: 1px solid var(--border-main) !important;
     background: var(--base);
     margin-top: 0px !important;
   }
@@ -6672,8 +6672,8 @@ tbody {
     gap: 10px;
     height: 52px;
     background: var(--base);
-    border-top: 1px solid var(--slate5);
-    border-bottom: 1px solid var(--slate5);
+    border-top: 1px solid var(--border-main);
+    border-bottom: 1px solid var(--border-main);
 
 
 
@@ -7069,7 +7069,7 @@ tbody {
   height: calc(100vh - 64px);
   max-width: 288px;
   background-color: var(--base);
-  border-right: 1px solid var(--slate5) !important;
+  border-right: 1px solid var(--border-main) !important;
   display: grid !important;
   grid-template-rows: auto 1fr auto !important;
 }
@@ -7078,7 +7078,7 @@ tbody {
   height: calc(100vh - 64px);
   max-width: 288px;
   background-color: var(--base);
-  border-right: 1px solid var(--slate5) !important;
+  border-right: 1px solid var(--border-main) !important;
   display: grid !important;
   grid-template-rows: auto 1fr auto !important;
 }
@@ -7086,7 +7086,7 @@ tbody {
 .home-page-sidebar {
   max-width: 288px;
   background-color: var(--base);
-  border-right: 1px solid var(--slate5);
+  border-right: 1px solid var(--border-main);
   display: grid;
   grid-template-rows: auto 1fr auto;
 }
@@ -7107,7 +7107,7 @@ tbody {
 .tooljet-database-sidebar {
   max-width: 288px;
   background: var(--base);
-  border-right: 1px solid var(--slate5);
+  border-right: 1px solid var(--border-main);
 
 
   .sidebar-container {
@@ -7487,7 +7487,7 @@ tbody {
   padding-top: 20px;
   padding-left: 20px;
   padding-bottom: 24px;
-  border-right: 1px solid var(--slate5);
+  border-right: 1px solid var(--border-main);
 }
 
 .layout-sidebar-icon {
@@ -7568,7 +7568,7 @@ tbody {
 }
 
 .editor .navbar-brand {
-  border-right: 1px solid var(--slate5);
+  border-right: 1px solid var(--border-main);
   width: 48px;
   display: flex;
   justify-content: center;
@@ -7605,7 +7605,7 @@ tbody {
 .home-page-footer {
   height: 52px;
   background-color: var(--base) !important;
-  border-top: 1px solid var(--slate5) !important;
+  border-top: 1px solid var(--border-main) !important;
 }
 
 .pagination-container {
@@ -8184,7 +8184,7 @@ tbody {
   padding-bottom: 22px;
   padding-left: 40px;
   height: 64px;
-  border-bottom: 1px solid var(--slate5);
+  border-bottom: 1px solid var(--border-main);
 }
 
 .dashboard-breadcrumb-header-name:hover {
@@ -8447,7 +8447,7 @@ tbody {
 
 .liner {
   height: 1px;
-  background: var(--slate5);
+  background: var(--border-main);
   width: 880px;
   margin-top: 22px;
 }
@@ -8709,7 +8709,7 @@ tbody {
   padding: 16px;
   gap: 7px;
   width: 220px;
-  border-right: 1px solid var(--slate5);
+  border-right: 1px solid var(--border-main);
   overflow-y: auto;
   overflow-x: hidden;
 }
@@ -8717,7 +8717,7 @@ tbody {
 .groups-header-wrap {
   display: flex;
   height: 36px;
-  border-bottom: 1px solid var(--slate5);
+  border-bottom: 1px solid var(--border-main);
 }
 
 .org-users-page-container {
@@ -8760,7 +8760,7 @@ tbody {
 .groups-sub-header-wrap {
   width: 612px;
   height: 36px;
-  border-bottom: 1px solid var(--slate5) !important;
+  border-bottom: 1px solid var(--border-main) !important;
 
   .nav-link.active {
     border-bottom: 2px solid var(--indigo9) !important;
@@ -8802,7 +8802,7 @@ tbody {
   flex-direction: row;
   background: var(--base);
   width: 880px;
-  outline: 1px solid var(--slate5);
+  outline: 1px solid var(--border-main);
   box-shadow: 0px 1px 2px rgba(16, 24, 40, 0.05);
   border-radius: 6px;
 }
@@ -8819,7 +8819,7 @@ tbody {
     padding: 0px 24px;
     width: 660px;
     height: 72px;
-    border-bottom: 1px solid var(--slate5);
+    border-bottom: 1px solid var(--border-main);
 
   }
 
@@ -8877,7 +8877,7 @@ tbody {
 }
 
 .groups-app-body-header {
-  border-bottom: 1px solid var(--slate5);
+  border-bottom: 1px solid var(--border-main);
 
   p {
     height: 36px;
@@ -8939,7 +8939,7 @@ tbody {
 }
 
 .manage-group-permision-header {
-  border-bottom: 1px solid var(--slate5);
+  border-bottom: 1px solid var(--border-main);
   display: flex;
 
   p {
@@ -8959,7 +8959,7 @@ tbody {
   }
 
   tr {
-    border-bottom: 1px solid var(--slate5);
+    border-bottom: 1px solid var(--border-main);
     width: 612px !important;
 
   }
@@ -9041,7 +9041,7 @@ tbody {
   border-radius: 6px;
   padding: 12px 24px 12px 24px;
   background: var(--slate3);
-  border: 1px solid var(--slate5);
+  border: 1px solid var(--border-main);
   border-radius: 6px;
   margin-bottom: 16px;
 
@@ -9076,7 +9076,7 @@ tbody {
   padding: 12px 6px;
   width: 612px !important;
   height: 64px;
-  border-bottom: 1px solid var(--slate5);
+  border-bottom: 1px solid var(--border-main);
 
   p {
     width: 272px;
@@ -9155,12 +9155,12 @@ tbody {
 }
 
 .faded-input {
-  background: var(--slate5);
+  background: var(--border-main);
 }
 
 .manage-group-table-head {
   display: flex;
-  border-bottom: 1px solid var(--slate5);
+  border-bottom: 1px solid var(--border-main);
   width: 612px;
   height: 36px;
   padding: 8px 12px;
@@ -9177,7 +9177,7 @@ tbody {
 
 .manage-groups-permission-apps,
 .apps-constant-permission-wrap {
-  border-bottom: 1px solid var(--slate5);
+  border-bottom: 1px solid var(--border-main);
 }
 
 .manage-groups-permission-apps,
@@ -9204,7 +9204,7 @@ tbody {
 .apps-folder-permission-wrap,
 .apps-variable-permission-wrap {
   height: 44px;
-  border-bottom: 1px solid var(--slate5);
+  border-bottom: 1px solid var(--border-main);
 }
 
 .delete-group {
@@ -9314,7 +9314,7 @@ tbody {
 
       .select-panel {
         .search {
-          border-bottom: 1px solid var(--slate5);
+          border-bottom: 1px solid var(--border-main);
         }
 
         .search,
@@ -9405,7 +9405,7 @@ tbody {
 .manage-users-drawer-footer {
   padding: 24px 32px;
   height: 88px;
-  border-top: 1px solid var(--slate5) !important;
+  border-top: 1px solid var(--border-main) !important;
   display: flex;
   gap: 8px;
   justify-content: end;
@@ -9803,7 +9803,7 @@ tbody {
 
 
 .org-custom-select-header-wrap {
-  border-bottom: 1px solid var(--slate5);
+  border-bottom: 1px solid var(--border-main);
 }
 
 .btn-close:focus {
@@ -9935,13 +9935,13 @@ tbody {
   padding: 24px 32px;
   gap: 8px;
   height: 88px;
-  border-top: 1px solid var(--slate5);
+  border-top: 1px solid var(--border-main);
   background: var(--base);
 }
 
 .drawer-card-title {
   padding: 16px;
-  border-bottom: 1px solid var(--slate5);
+  border-bottom: 1px solid var(--border-main);
 
   h3 {
     margin-bottom: 0px !important;
@@ -10728,7 +10728,7 @@ tbody {
   .card {
     background-color: var(--base) !important;
     color: var(--slate12) !important;
-    border-color: var(--slate5) !important;
+    border-color: var(--border-main) !important;
   }
 
   .datasource-modal-sidebar-footer {
@@ -10824,7 +10824,7 @@ tbody {
   .modal-header {
     background: var(--base);
     color: var(--slate12);
-    border-bottom: 1px solid var(--slate5);
+    border-bottom: 1px solid var(--border-main);
   }
 }
 
@@ -11136,7 +11136,7 @@ tbody {
   .editor {
     .header>.navbar {
       background-color: var(--base) !important;
-      border-bottom: 1px solid var(--slate5);
+      border-bottom: 1px solid var(--border-main);
       z-index: 10;
     }
   }
@@ -11319,12 +11319,12 @@ tbody {
 }
 
 .navbar-right-section {
-  border-left: 1px solid var(--slate5);
+  border-left: 1px solid var(--border-main);
 }
 
 .modal-header {
   background-color: var(--base);
-  border-bottom: 1px solid var(--slate5);
+  border-bottom: 1px solid var(--border-main);
 }
 
 .sidebar-debugger {
@@ -11371,7 +11371,7 @@ tbody {
 
 
 .navbar-seperator {
-  border: 1px solid var(--slate5, #2B2F31);
+  border: 1px solid var(--border-main, #2B2F31);
   background: var(--slate1, #151718);
   width: 1px;
   height: 19px;

@@ -55,7 +55,7 @@ $border-radius: 4px;
   flex: 1 1 auto;
   font-size: 12px;
   line-height: 20px;
-  border: 1px solid var(--slate5);
+  border: 1px solid var(--border-main);
   border-width: 1px 0px 0px 0px;
   background-color: var(--base);
 
@@ -209,7 +209,7 @@ $border-radius: 4px;
 
   .query-definition-pane {
     .header {
-      border: solid var(--slate5);
+      border: solid var(--border-main);
       border-width: 0px 0px 1px 0px;
       background: var(--base);
       z-index: 3;
@@ -251,7 +251,7 @@ $border-radius: 4px;
 
   .data-pane {
     flex: 0 0 288px;
-    border: solid var(--slate5);
+    border: solid var(--border-main);
     border-width: 0px 1px 0px 0px;
     overflow-x: hidden;
     overflow-y: scroll;
@@ -278,7 +278,7 @@ $border-radius: 4px;
       background-color: var(--base);
 
       .queries-header {
-        border: solid var(--slate5);
+        border: solid var(--border-main);
         border-width: 0px 0px 1px 0px;
         height: 44px;
         --tblr-gutter-x: 0rem;
@@ -570,7 +570,7 @@ $border-radius: 4px;
     color: var(--slate11);
     display: flex;
     align-items: center;
-    border-bottom: 1px solid var(--slate5) !important;
+    border-bottom: 1px solid var(--border-main) !important;
     border-radius: unset !important;
 
     span {
@@ -993,12 +993,12 @@ $border-radius: 4px;
     .preview-section-header {
       background-color: var(--slate1);
       border-radius: 6px 6px 0px 0px;
-      border: 1px solid var(--slate5);
+      border: 1px solid var(--border-main);
     }
   }
 
   .query-manager-border-color {
-    border-color: var(--slate5) !important;
+    border-color: var(--border-main) !important;
   }
 
   .query-details {
@@ -1175,7 +1175,7 @@ $border-radius: 4px;
 
   .runjs-editor {
     background-color: var(--base) !important;
-    border: 1px solid var(--slate5);
+    border: 1px solid var(--border-main);
     border-radius: 6px;
 
     .card-header {
@@ -1527,7 +1527,7 @@ $border-radius: 4px;
 
 .copilot-section-header {
   background-color: var(--slate2);
-  border: 1px solid var(--slate5);
+  border: 1px solid var(--border-main);
   border-top-right-radius: 6px;
   border-top-left-radius: 6px;
 }
@@ -1539,7 +1539,7 @@ $border-radius: 4px;
 }
 
 .query-hinter {
-  border: 1px solid var(--slate5);
+  border: 1px solid var(--border-main);
   border-radius: 0px 0px 6px 6px;
 
   .cm-s-base16-light.CodeMirror,

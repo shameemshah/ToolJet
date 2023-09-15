@@ -171,7 +171,7 @@ function DataSourceSelect({ isDisabled, selectRef, closePopup }) {
             cursor: 'pointer',
             backgroundColor: isFocused && !isNested ? 'var(--slate4)' : 'transparent',
             ...(isNested
-              ? { padding: '0 8px', marginLeft: '19px', borderLeft: '1px solid var(--slate5)', width: 'auto' }
+              ? { padding: '0 8px', marginLeft: '19px', borderLeft: '1px solid var(--border-main)', width: 'auto' }
               : {}),
             ...(!isNested && { borderRadius: '4px' }),
             ':hover': {

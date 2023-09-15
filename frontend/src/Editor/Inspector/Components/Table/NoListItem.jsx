@@ -9,7 +9,7 @@ const NoListItem = ({ text, dataCy = '' }) => {
       style={{
         padding: '6px 32px',
         borderRadius: '6px',
-        border: '1px dashed var(--slate5)',
+        border: '1px dashed var(--border-main)',
         color: 'var(--slate8)',
         marginBottom: '8px',
       }}

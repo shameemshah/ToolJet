@@ -424,7 +424,7 @@
     background: var(--base);
     border-left: none;
     border-bottom: none;
-    border-color: var(--slate5) !important;
+    border-color: var(--border-main) !important;
   }
 }
 
@@ -436,7 +436,7 @@
 
 .modal-body {
   .datasource-modal-sidebar-footer {
-    border: 1px solid var(--slate5);
+    border: 1px solid var(--border-main);
     width: 242px !important;
     height: 71px;
     background-color: var(--base);
@@ -633,7 +633,7 @@
   align-items: center;
   padding-top: 0px;
   width: 48px;
-  border-right: 1px solid var(--slate5);
+  border-right: 1px solid var(--border-main);
 }
 
 .tj-leftsidebar-icon-wrap {
@@ -756,7 +756,7 @@
 
 
   .accordion-item {
-    border: solid var(--slate5);
+    border: solid var(--border-main);
     border-width: 1px 0px 1px 0px;
   }
 

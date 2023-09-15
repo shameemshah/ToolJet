@@ -527,7 +527,7 @@
   .tr{
     .th{
       background: var(--slate3, #F1F3F5) !important;
-      border-bottom: 1px solid var(--slate5, #E6E8EB) !important;
+      border-bottom: 1px solid var(--border-main, #E6E8EB) !important;
       border-top: 0 !important;
       padding: 6px 12px;
       align-items: center;
@@ -598,13 +598,13 @@
 }
 .resizing-column{
   background-color: var(--slate4, #ECEEF0) !important; 
-  border-right: 4px solid var(--slate5, #E6E8EB) !important;
+  border-right: 4px solid var(--border-main, #E6E8EB) !important;
 }
 .table-striped{
   .resizing-column{
     background-color: var(--slate4, #ECEEF0) !important; 
     --tblr-table-accent-bg : var(--slate4,#ECEEF0) ;
-    border-right: 4px solid var(--slate5, #E6E8EB) !important;
+    border-right: 4px solid var(--border-main, #E6E8EB) !important;
   }
 }
 .loading-spinner-table-component{
@@ -638,5 +638,5 @@
  }
 }
 .th:has(.resizer:hover){
-  border-right:4px solid var(--slate5, #ECEEF0) !important; 
+  border-right:4px solid var(--border-main, #ECEEF0) !important; 
 }
