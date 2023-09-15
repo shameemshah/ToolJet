@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { SketchPicker } from 'react-color';
 import OverlayTrigger from 'react-bootstrap/OverlayTrigger';
 import Popover from 'react-bootstrap/Popover';
+import SolidIcon from '@/_ui/Icon/SolidIcons';
 
 export const Color = ({ value, onChange, pickerStyle = {}, cyLabel, asBoxShadowPopover = true }) => {
   const [showPicker, setShowPicker] = useState(false);
@@ -89,6 +90,28 @@ export const Color = ({ value, onChange, pickerStyle = {}, cyLabel, asBoxShadowP
 
         <div className="col tj-text-xsm p-0 color-slate12" data-cy={`${String(cyLabel)}-value`}>
           {value}
+        </div>
+        <div
+          className="col"
+          style={{
+            maxWidth: '20px',
+            maxHeight: '20px',
+            padding: '0px',
+            marginRight: '4px',
+            display: 'flex',
+          }}
+          onClick={(e) => {
+            e.stopPropagation();
+            onChange('#bd656500');
+          }}
+        >
+          <SolidIcon
+            data-tooltip-id="tooltip-for-copy-invitation-link"
+            data-tooltip-content="Copy invitation link"
+            width="12"
+            fill="var(--slate12)"
+            name="eyeopen"
+          />
         </div>
       </div>
     );
